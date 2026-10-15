@@ -2,7 +2,7 @@
 
 # Igoo Mod
 
-**Một mod Minecraft Fabric mở rộng hệ thống kim loại, hợp kim và vật phẩm chế tạo**
+**Một mod Minecraft Fabric mở rộng hệ thống kim loại, hợp kim và vật phẩm chế tạo, cũng như gia tăng độ khó cho việc sinh tồn.**
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-26.2-4CAF50?style=for-the-badge&logo=minecraft)](https://minecraft.net)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader-DBB69C?style=for-the-badge)](https://fabricmc.net)
@@ -32,7 +32,7 @@
 
 ## 🌟 Giới thiệu
 
-**Igoo Mod** là một dự án mod Fabric được xây dựng nhằm mở rộng hệ thống vật phẩm và chế tạo của Minecraft. Mod tập trung vào việc bổ sung các loại **kim loại và hợp kim mới** như nhôm, đồng thiếc, thép carbon, inox, thiếc và hợp kim titan — phục vụ cho việc chế tạo dụng cụ, giáp và máy móc trong tương lai.
+**Igoo Mod** là một dự án mod Fabric được xây dựng nhằm mở rộng hệ thống vật phẩm và chế tạo của Minecraft. Mod tập trung vào việc bổ sung các loại **kim loại và hợp kim mới**, thế giới, cấu trúc hoàn toàn mới, mang đến lối chơi sinh tồn hoàn toàn mới thay vì end game bằng cách đánh rồng.
 
 Mod được phát triển với mục tiêu:
 - 🎯 Cân bằng giữa vanilla và modded gameplay
