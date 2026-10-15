@@ -44,19 +44,33 @@ Mod được phát triển với mục tiêu:
 
 ## ✨ Tính năng
 
-### 🔩 Vật phẩm hiện có
-
-| Tên hiển thị | ID | Mô tả |
-|---|---|---|
-| Aluminum Ingot | `aluminum_ingot` | Thỏi nhôm – nhẹ, dẫn điện tốt |
-| Bronze Ingot | `bronze_ingot` | Thỏi đồng thiếc – bền, chống ăn mòn |
+### 🔩 Vật phẩm hiện có (Items)
+| Tên | ID | Mô tả |
+| --- | --- | --- |
+| Aluminum Ingot | `aluminum_ingot` | Thỏi nhôm – nhẹ |
+| Bronze Ingot | `bronze_ingot` | Thỏi đồng thiếc – bền |
 | Carbon Steel Ingot | `carbon_steel_ingot` | Thép carbon – cứng, dùng cho dụng cụ |
-| Stainless Steel Ingot | `stainless_steel_ingot` | Thép không gỉ – cao cấp |
 | Chromium Ingot | `chromium_ingot` | Thỏi crom – kim loại hiếm |
-| Tin Ingot | `tin_ingot` | Thỏi thiếc – nguyên liệu hợp kim |
-| Titanium Alloy | `titanium_alloy` | Hợp kim titan – siêu bền |
-| Crystal Wand | `crystal_wand` | Gậy pha lê – vật phẩm đặc biệt |
-| Titanium Core | `titanium_core` | Lõi titan – linh kiện chế tạo |
+| Stainless Steel Ingot | `stainless_steel_ingot` | Thép không gỉ – cao cấp, bền bỉ |
+| Tin Ingot | `tin_ingot` | Thỏi thiếc – nguyên liệu hợp kim, dễ uốn |
+| Titanium Alloy | `titanium_alloy` | Hợp kim titan – siêu bền, nhẹ |
+| Titanium Ingot | `titanium_ingot` | Thỏi titan – kim loại quý, độ bền cao |
+| Tungsten Carbide Ingot | `tungsten_carbide_ingot` | Thép vonfram – cực cứng |
+| Tungsten Ingot | `tungsten_ingot` | Thỏi vonfram – kim loại nặng |
+
+### 🔩 Khối hiện có (Blocks)
+| Tên | ID |Mô tả |
+| --- | --- | --- |
+| Aluminum Block | `aluminum_block` | Khối nhôm |
+| Bronze Block | `bronze_block` | Khối đồng thiếc |
+| Carbon Steel Block | `carbon_steel_block` | Khối thép carbon |
+| Chromium Block | `chromium_block` | Khối crom |
+| Stainless Steel Block | `stainless_steel_block` | Khối thép không gỉ |
+| Tin Block | `tin_block` | Khối thiếc |
+| Titanium Alloy Block | `titanium_alloy_block` | Khối hợp kim titan |
+| Titanium Block | `titanium_block` | Khối titan |
+| Tungsten Block | `tungsten_block` | Khối vonfram |
+| Tungsten Carbide Block| `tungsten_carbide_block` | Khối thép vonfram |
 
 ### 🚧 Tính năng dự kiến
 
@@ -88,14 +102,14 @@ Mod được phát triển với mục tiêu:
 ### 1️⃣ Clone dự án
 
 ```bash
-git clone https://github.com/<username>/igoo-template-26.2.git
+git clone https://github.com/earthen-r4x/minecraft-hardcore-fabric26.2.git
 cd igoo-template-26.2
 ```
 
 ### 2️⃣ Build mod
 
 -  Windows (PowerShell / CMD), macOS / Linux
-``` bash
+```bash
 ./gradlew build
 ```
 
