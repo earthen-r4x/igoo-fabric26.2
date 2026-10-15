@@ -1,0 +1,25 @@
+{
+    "item.igoo.aluminum_ingot": "Thỏi Nhôm",
+    "item.igoo.bronze_ingot": "Thỏi Đồng Thiếc",
+    "item.igoo.carbon_steel_ingot": "Thỏi Thép Carbon",
+    "item.igoo.chromium_ingot": "Thỏi Crom",
+    "item.igoo.stainless_steel_ingot": "Thỏi Thép Không Gỉ",
+    "item.igoo.tin_ingot": "Thỏi Thiếc",
+    "item.igoo.titanium_alloy": "Hợp Kim Titan",
+    "item.igoo.titanium_ingot": "Thỏi Titan",
+    "item.igoo.tungsten_carbide_ingot": "Thỏi Cacbua Vonfram",
+    "item.igoo.tungsten_ingot": "Thỏi Vonfram",
+    "creativemodetab.igoo.aluminum_items": "Vật liệu",
+    
+    "block.igoo.aluminum_block": "Khối Nhôm",
+    "block.igoo.bronze_block": "Khối Đồng Thiếc",
+    "block.igoo.carbon_steel_block": "Khối Thép Carbon",
+    "block.igoo.chromium_block": "Khối Crom",
+    "block.igoo.stainless_steel_block": "Khối Thép Không Gỉ",
+    "block.igoo.tin_block": "Khối Thiếc",
+    "block.igoo.titanium_block": "Khối Titan",
+    "block.igoo.titanium_alloy_block": "Khối Hợp Kim Titan",
+    "block.igoo.tungsten_block": "Khối Vonfram",
+    "block.igoo.tungsten_carbide_block": "Khối Cacbua Vonfram",
+    "creativemodetab.igoo.aluminum_blocks": "Khối"
+}

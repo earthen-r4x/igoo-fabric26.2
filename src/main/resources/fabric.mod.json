@@ -3,13 +3,13 @@
 	"id": "igoo",
 	"version": "${version}",
 	"name": "igoo",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Expand your Minecraft survival experience with a growing collection of industrial materials, metal ingots, and advanced alloys. From Bronze and Stainless Steel to Titanium Alloys and Tungsten Carbide, discover new possibilities for crafting, engineering, and technological progression.",
 	"authors": [
-		"Me!"
+		"E4rth3n"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://discord.gg/mrXBHH2np5",
+		"sources": "https://github.com/earthen-r4x/minecraft-hardcore-fabric26.2"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/igoo/icon.png",

@@ -1,3 +1,25 @@
 {
-    "item.igoo.aluminum_ingot": "Aluminum Ingot"
+    "item.igoo.aluminum_ingot": "Aluminum Ingot",
+    "item.igoo.bronze_ingot": "Bronze Ingot",
+    "item.igoo.carbon_steel_ingot": "Carbon Steel Ingot",
+    "item.igoo.chromium_ingot": "Chromium Ingot",
+    "item.igoo.stainless_steel_ingot": "Stainless Steel Ingot",
+    "item.igoo.tin_ingot": "Tin Ingot",
+    "item.igoo.titanium_alloy": "Titanium Alloy",
+    "item.igoo.titanium_ingot": "Titanium Ingot",
+    "item.igoo.tungsten_carbide_ingot": "Tungsten Carbide Ingot",
+    "item.igoo.tungsten_ingot": "Tungsten Ingot", 
+    "creativemodetab.igoo.aluminum_items": "Material",
+    
+    "block.igoo.aluminum_block": "Block of Aluminum",
+    "block.igoo.bronze_block": "Block of Bronze",
+    "block.igoo.carbon_steel_block": "Block of Carbon Steel",
+    "block.igoo.chromium_block": "Block of Chromium",
+    "block.igoo.stainless_steel_block": "Block of Stainless Steel",
+    "block.igoo.tin_block": "Block of Tin",
+    "block.igoo.titanium_block": "Block of Titanium",
+    "block.igoo.titanium_alloy_block": "Block of Titanium Alloy",
+    "block.igoo.tungsten_block": "Block of Tungsten",
+    "block.igoo.tungsten_carbide_block": "Block of Tungsten Carbide",
+    "creativemodetab.igoo.aluminum_blocks": "Block"
 }
