@@ -374,6 +374,8 @@ SOFTWARE.
 
 - [📕 fabric-example-mod](https://github.com/FabricMC/fabric-example-mod) – Template chính thức
 
+- [🎥 Modding by Kaupenjoe](https://youtube.com/@moddingbykaupenjoe) – Kênh YouTube hướng dẫn
+
 ---
 
 ## 👤 Tác giả
