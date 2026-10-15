@@ -76,7 +76,6 @@ Mod được phát triển với mục tiêu:
 
 - [ ] Dụng cụ (Pickaxe, Axe, Shovel, Sword, Hoe) cho mỗi loại kim loại
 - [ ] Giáp (Helmet, Chestplate, Leggings, Boots) cho mỗi loại kim loại
-- [ ] Khối lưu trữ (Block of Aluminum, Block of Titanium...)
 - [ ] Công thức chế tạo cho lò nung (Furnace) và bàn chế tạo (Crafting Table)
 - [ ] Hệ thống máy móc / năng lượng
 - [ ] Cây trồng và thực phẩm mới
