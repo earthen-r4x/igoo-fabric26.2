@@ -76,7 +76,6 @@ Mod được phát triển với mục tiêu:
 
 - [ ] Dụng cụ (Pickaxe, Axe, Shovel, Sword, Hoe) cho mỗi loại kim loại
 - [ ] Giáp (Helmet, Chestplate, Leggings, Boots) cho mỗi loại kim loại
-- [ ] Khối lưu trữ (Block of Aluminum, Block of Titanium...)
 - [ ] Công thức chế tạo cho lò nung (Furnace) và bàn chế tạo (Crafting Table)
 - [ ] Hệ thống máy móc / năng lượng
 - [ ] Cây trồng và thực phẩm mới
@@ -295,11 +294,8 @@ Tìm các dòng có tiền tố [igoo] hoặc com.igoo để debug.
 
 ### 🔍 Cách debug hiệu quả
 1. Đọc kỹ stack trace: Lỗi ở dòng nào, class nào?
-
 2. Dùng --stacktrace: Chạy ./gradlew build --stacktrace để có log chi tiết
-
 3. Kiểm tra log game: Tìm dòng ERROR hoặc WARN có chứa igoo
-
 4. So sánh với mod mẫu: Tham khảo fabric-example-mod
 
 ---
@@ -312,26 +308,18 @@ Tìm các dòng có tiền tố [igoo] hoặc com.igoo để debug.
 Mọi đóng góp đều được hoan nghênh! Để đóng góp:
 
 1. Fork dự án
-
 2. Tạo nhánh mới: git checkout -b feature/tinh-nang-moi
-
 3. Commit thay đổi: git commit -m "Thêm tính năng X"
-
 4. Push lên nhánh: git push origin feature/tinh-nang-moi
-
 5. Mở Pull Request
 
 ### 🐛 Báo cáo bug
 Khi báo cáo bug, vui lòng cung cấp:
 
 - Phiên bản Minecraft, Fabric Loader, Fabric API
-
 - Phiên bản mod Igoo
-
 - File log (logs/latest.log)
-
 - Các bước tái hiện lỗi
-
 - Ảnh chụp màn hình (nếu có)
 
 ---
@@ -367,12 +355,10 @@ SOFTWARE.
 
 ## 📚 Tài liệu tham khảo
 - [📘 Fabric Documentation](https://docs.fabricmc.net/) – Hướng dẫn chính thức
-
 - [📗 Fabric Wiki](https://fabricmc.net/wiki/) – Wiki cộng đồng
-
 - [📙 Minecraft Wiki](https://minecraft.wiki/) – Thông tin về game
-
 - [📕 fabric-example-mod](https://github.com/FabricMC/fabric-example-mod) – Template chính thức
+- [🎥 Modding by Kaupenjoe](https://youtube.com/@moddingbykaupenjoe) – Kênh YouTube hướng dẫn
 
 ---
 
