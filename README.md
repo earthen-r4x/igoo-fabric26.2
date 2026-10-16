@@ -252,7 +252,7 @@ dependencies {
 ---
 
 ## 🧪 Kiểm thử trong game
-Sau khi chạy ./gradlew runClient:
+Sau khi chạy `./gradlew runClient`:
 
 1. Mở Creative Inventory (phím E)
 
