@@ -1,0 +1,5 @@
+// 26.2	-999999999-01-01T00:00:00	igoo/Tags for minecraft:block
+bd790876b95d3a53ccdb953e93f58c1e182de1af data/minecraft/tags/block/mineable/pickaxe.json
+50f4f6e6c8f34a06e4c6dddc0babd3cbf23e45ba data/minecraft/tags/block/needs_diamond_tool.json
+c1f242e7eee55288d4781ea9b18d68cdd23519c4 data/minecraft/tags/block/needs_iron_tool.json
+ce6e7f6a48f29219c1b2ad96fde0bb1c426db1c3 data/minecraft/tags/block/needs_stone_tool.json

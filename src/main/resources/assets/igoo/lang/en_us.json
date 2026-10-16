@@ -8,7 +8,12 @@
     "item.igoo.titanium_alloy": "Titanium Alloy",
     "item.igoo.titanium_ingot": "Titanium Ingot",
     "item.igoo.tungsten_carbide_ingot": "Tungsten Carbide Ingot",
-    "item.igoo.tungsten_ingot": "Tungsten Ingot", 
+    "item.igoo.tungsten_ingot": "Tungsten Ingot",
+    "item.igoo.raw_aluminum": "Raw Aluminum",
+    "item.igoo.raw_chromium": "Raw Chromium",
+    "item.igoo.raw_tin": "Raw Tin",
+    "item.igoo.raw_titanium": "Raw Titanium",
+    "item.igoo.raw_tungsten": "Raw Tungsten",
     "creativemodetab.igoo.aluminum_items": "Material",
     
     "block.igoo.aluminum_block": "Block of Aluminum",
@@ -21,5 +26,10 @@
     "block.igoo.titanium_alloy_block": "Block of Titanium Alloy",
     "block.igoo.tungsten_block": "Block of Tungsten",
     "block.igoo.tungsten_carbide_block": "Block of Tungsten Carbide",
+    "block.igoo.aluminum_ore": "Aluminum Ore",
+    "block.igoo.chromium_ore": "Chromium Ore",
+    "block.igoo.tin_ore": "Tin Ore",
+    "block.igoo.titanium_ore": "Titanium Ore",
+    "block.igoo.tungsten_ore": "Tungsten Ore",
     "creativemodetab.igoo.aluminum_blocks": "Block"
 }

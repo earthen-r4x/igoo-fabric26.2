@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "igoo:aluminum_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "igoo:aluminum_ingot"
+  }
+}

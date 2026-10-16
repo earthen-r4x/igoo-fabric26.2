@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.igoo.Igoo;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
-    // Item registration, from resources/assets/igoo/textures/item/*.png
+    // Ingot
     public static final Item Aluminum_ingot = registerItem("aluminum_ingot", Item::new);
     public static final Item Bronze_ingot = registerItem("bronze_ingot", Item:: new);
     public static final Item Carbon_steel_ingot = registerItem("carbon_steel_ingot", Item:: new);
@@ -24,8 +26,13 @@ public class ModItems {
     public static final Item Titanium_ingot = registerItem("titanium_ingot", Item:: new);
     public static final Item Tungsten_carbide_ingot = registerItem("tungsten_carbide_ingot", Item:: new);
     public static final Item Tungsten_ingot = registerItem("tungsten_ingot", Item:: new);
-    
-    
+//    Raw
+    public static final Item Raw_aluminum = registerItem("raw_aluminum", Item:: new);
+    public static final Item Raw_chromium = registerItem("raw_chromium", Item:: new);
+    public static final Item Raw_tin = registerItem("raw_tin", Item:: new);
+    public static final Item Raw_titanium = registerItem("raw_titanium", Item:: new);
+    public static final Item Raw_tungsten = registerItem("raw_tungsten", Item:: new);
+
     public static final List<Item> ALL_ITEMS = List.of(
         Aluminum_ingot,
         Bronze_ingot,
@@ -36,7 +43,12 @@ public class ModItems {
         Titanium_alloy,
         Titanium_ingot,
         Tungsten_carbide_ingot,
-        Tungsten_ingot
+        Tungsten_ingot,
+        Raw_aluminum,
+        Raw_chromium,
+        Raw_tin,
+        Raw_titanium,
+        Raw_tungsten
     );
     
     public static Item registerItem(String name, Function<Item.Properties, Item> function) {

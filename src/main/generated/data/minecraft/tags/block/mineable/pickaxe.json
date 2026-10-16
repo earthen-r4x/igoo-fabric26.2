@@ -1,0 +1,19 @@
+{
+  "values": [
+    "igoo:aluminum_block",
+    "igoo:bronze_block",
+    "igoo:carbon_steel_block",
+    "igoo:chromium_block",
+    "igoo:stainless_steel_block",
+    "igoo:tin_block",
+    "igoo:titanium_alloy_block",
+    "igoo:titanium_block",
+    "igoo:tungsten_block",
+    "igoo:tungsten_carbide_block",
+    "igoo:aluminum_ore",
+    "igoo:chromium_ore",
+    "igoo:tin_ore",
+    "igoo:titanium_ore",
+    "igoo:tungsten_ore"
+  ]
+}

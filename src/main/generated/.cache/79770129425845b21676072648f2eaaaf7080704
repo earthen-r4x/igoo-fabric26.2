@@ -1,0 +1,16 @@
+// 26.2	-999999999-01-01T00:00:00	igoo/Block Loot Tables
+b7dddae0d61ab5a7bdff6af0000270c348a64497 data/igoo/loot_table/blocks/aluminum_block.json
+f0fdc062937abeaefa5ce5c90a56852b8da7d7d7 data/igoo/loot_table/blocks/aluminum_ore.json
+76982e5eca0b7504b644ade578fa1831b7f5d042 data/igoo/loot_table/blocks/bronze_block.json
+45c7bd2ed48269d57ea4bf3cb5ebd8691e62bbdb data/igoo/loot_table/blocks/carbon_steel_block.json
+23ec54ac2ef080a22a8b856b7a2d9181eb3d6698 data/igoo/loot_table/blocks/chromium_block.json
+26099622cd11d5c12c18351ccfb1eebc361a438e data/igoo/loot_table/blocks/chromium_ore.json
+db950c764d9c0b1da05e261112310f7f61d1e09b data/igoo/loot_table/blocks/stainless_steel_block.json
+633ab6f7ef8d6d3f156596f72da68cf6b782e3f3 data/igoo/loot_table/blocks/tin_block.json
+9dd240447bc4ee4bd51676e8c0cdeb0318aab027 data/igoo/loot_table/blocks/tin_ore.json
+93c33a79e5bfcde4773fcf8dec937f2f8fb9d291 data/igoo/loot_table/blocks/titanium_alloy_block.json
+32bd434a485a963d099ba13625961f497e26a053 data/igoo/loot_table/blocks/titanium_block.json
+73508406037a08e9f9468fb9e7249f61ff8a4355 data/igoo/loot_table/blocks/titanium_ore.json
+0dbb7040a27fbe40d57260393a2bf51527137797 data/igoo/loot_table/blocks/tungsten_block.json
+e752931cf8526ff4850ffd88f1f50eabde8340ad data/igoo/loot_table/blocks/tungsten_carbide_block.json
+30f8a0334b2e26f1fa9f6bdb58a83a755d2db012 data/igoo/loot_table/blocks/tungsten_ore.json
