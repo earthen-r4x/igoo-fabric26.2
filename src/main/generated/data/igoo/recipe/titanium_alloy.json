@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "igoo:titanium_alloy_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "igoo:titanium_alloy"
+  }
+}

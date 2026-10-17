@@ -120,22 +120,23 @@ public class ModBlocks {
         Tungsten_ore
     );
     
-    // Yêu cầu cuốc đá trở lên
+    // Yêu cầu cuốc chim đá trở lên
     public static final List<Block> MINE_WITH_STONE = List.of(
-        Aluminum_ore,
         Tin_ore,
+        Chromium_ore,
         Aluminum_block,
         Bronze_block,
         Carbon_steel_block,
-        Tin_block
+        Tin_block,
+        Chromium_block
     );
-    // Yêu cầu cuốc sắt trở lên
+
+    // Yêu cầu cuốcchim sắt trở lên
     public static final List<Block> MINE_WITH_IRON = List.of(
-        Chromium_ore,
-        Chromium_block,
         Stainless_steel_block
     );
-    // Yêu cầu cuốc kim cương trở lên
+
+    // Yêu cầu cuốc chim kim cương trở lên
     public static final List<Block> MINE_WITH_DIAMOND = List.of(
         Titanium_ore,
         Tungsten_ore,

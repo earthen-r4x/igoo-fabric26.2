@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.25,
+  "group": "tungsten",
+  "ingredient": "igoo:tungsten_ore",
+  "result": {
+    "id": "igoo:tungsten_ingot"
+  }
+}

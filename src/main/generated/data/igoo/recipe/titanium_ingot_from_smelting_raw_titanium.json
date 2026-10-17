@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.25,
+  "group": "titanium",
+  "ingredient": "igoo:raw_titanium",
+  "result": {
+    "id": "igoo:titanium_ingot"
+  }
+}

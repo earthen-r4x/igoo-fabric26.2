@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "igoo:tungsten_carbide_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tungsten_carbide_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "igoo:tungsten_carbide_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tungsten_carbide_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "igoo:tungsten_carbide_block"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "igoo:tungsten_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "igoo:tungsten_ingot"
+  }
+}

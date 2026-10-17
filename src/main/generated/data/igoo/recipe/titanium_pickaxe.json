@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "igoo:titanium_ingot",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "XXX",
+    " | ",
+    " | "
+  ],
+  "result": {
+    "id": "igoo:titanium_pickaxe"
+  }
+}

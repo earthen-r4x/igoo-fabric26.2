@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "igoo:tungsten_ingot",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "XX",
+    " |",
+    " |"
+  ],
+  "result": {
+    "id": "igoo:tungsten_hoe"
+  }
+}

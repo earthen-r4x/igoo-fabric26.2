@@ -1,6 +1,5 @@
 {
   "type": "minecraft:smelting",
-  "category": "blocks",
   "experience": 0.25,
   "group": "aluminum",
   "ingredient": "igoo:aluminum_ore",

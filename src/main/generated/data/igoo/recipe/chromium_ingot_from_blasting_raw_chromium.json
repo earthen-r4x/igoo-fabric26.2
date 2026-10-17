@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.25,
+  "group": "chromium",
+  "ingredient": "igoo:raw_chromium",
+  "result": {
+    "id": "igoo:chromium_ingot"
+  }
+}

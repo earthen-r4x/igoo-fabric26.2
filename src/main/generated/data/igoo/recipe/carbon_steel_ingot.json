@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "igoo:carbon_steel_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "igoo:carbon_steel_ingot"
+  }
+}

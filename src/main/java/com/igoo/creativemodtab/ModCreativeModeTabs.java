@@ -13,20 +13,29 @@ import net.minecraft.world.item.ItemStack;
 
 public class ModCreativeModeTabs {
 //    Item
-    public static final CreativeModeTab ALUMINUM_ITEM_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
-            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "aluminum_items"),
+    public static final CreativeModeTab ITEM_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "items"),
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_ingot))
-    .title(Component.translatable("creativemodetab.igoo.aluminum_items"))
+    .title(Component.translatable("creativemodetab.igoo.items"))
     .displayItems((parameters, output) -> {ModItems.ALL_ITEMS.forEach(output::accept);})
                     
     .build());
     
 //    Block
-    public static final CreativeModeTab ALUMINUM_BLOCK_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
-            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "aluminum_blocks"),
+    public static final CreativeModeTab BLOCK_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "blocks"),
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.Aluminum_block))
-    .title(Component.translatable("creativemodetab.igoo.aluminum_blocks"))
+    .title(Component.translatable("creativemodetab.igoo.blocks"))
     .displayItems((parameters, output) -> {ModBlocks.ALL_BLOCKS.forEach(output::accept);})
+                    
+    .build());
+    
+//    Tools
+    public static final CreativeModeTab TOOL_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tools"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_pickaxe))
+    .title(Component.translatable("creativemodetab.igoo.tools"))
+    .displayItems((parameters, output) -> {ModItems.ALL_TOOLS.forEach(output::accept);})
                     
     .build());
     

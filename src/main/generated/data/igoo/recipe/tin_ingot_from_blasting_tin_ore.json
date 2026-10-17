@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.25,
+  "group": "tin",
+  "ingredient": "igoo:tin_ore",
+  "result": {
+    "id": "igoo:tin_ingot"
+  }
+}

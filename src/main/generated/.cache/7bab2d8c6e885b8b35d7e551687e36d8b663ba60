@@ -1,0 +1,11 @@
+// 26.2	-999999999-01-01T00:00:00	igoo/Tags for minecraft:item
+933a77ef7639c44441732a610291fd46555748fe data/igoo/tags/item/aluminum_ingot.json
+3333569b4e84ac0a49d6d0123c4cb639a496771e data/igoo/tags/item/chromium_ingot.json
+200ae23b0f83fa5fc10b866ec86608792cc50dfd data/igoo/tags/item/tin_ingot.json
+cb07fbf278d2b33e7fc87c7c8419ce9d41449ab8 data/igoo/tags/item/titanium_ingot.json
+30a872c8a65642c2186d05349e4febf5d6cfd7ce data/igoo/tags/item/tungsten_ingot.json
+08817e0304654b342f1265832264441d5495c875 data/minecraft/tags/item/axes.json
+8fe452c7589d6f469edf4df47aadb504946bee4c data/minecraft/tags/item/hoes.json
+1ebd146010024901b35171af4df45ce540e455b1 data/minecraft/tags/item/pickaxes.json
+cab3499cc1ede7b4faf31a49b7dc33aea092b30b data/minecraft/tags/item/shovels.json
+9421516e5e1248bd70ec00cdecb53719c53c0a61 data/minecraft/tags/item/swords.json

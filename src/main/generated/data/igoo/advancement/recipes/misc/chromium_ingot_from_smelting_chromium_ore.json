@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chromium_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "igoo:chromium_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "igoo:chromium_ingot_from_smelting_chromium_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chromium_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "igoo:chromium_ingot_from_smelting_chromium_ore"
+    ]
+  }
+}
