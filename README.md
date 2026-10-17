@@ -90,7 +90,7 @@ Mod được phát triển với mục tiêu:
 - **Fabric API** phiên bản `0.161.0+26.2`
 
 ### Để phát triển mod
-- **JDK 21** trở lên ([Tải tại đây](https://adoptium.net/))
+- **JDK 25** trở lên ([Tải tại đây](https://www.oracle.com/java/technologies/downloads/))
 - **IntelliJ IDEA** hoặc **Visual Studio Code** (khuyến nghị dùng Extension Pack for Java)
 - **Git** để quản lý phiên bản
 
@@ -252,7 +252,7 @@ dependencies {
 ---
 
 ## 🧪 Kiểm thử trong game
-Sau khi chạy ./gradlew runClient:
+Sau khi chạy `./gradlew runClient`:
 
 1. Mở Creative Inventory (phím E)
 
