@@ -1,0 +1,11 @@
+// 26.2	-999999999-01-01T00:00:00	igoo/Igoo Worldgen
+28f9aaed22861a8f166073e8502e1ba695ceeae2 data/igoo/worldgen/configured_feature/aluminum_ore.json
+4a5f8781f78c683a4b60afcb0afeceded3b6ba90 data/igoo/worldgen/configured_feature/chromium_ore.json
+6a8de69f5ff453629f8a76eb3a50d05e3d7a5b8f data/igoo/worldgen/configured_feature/tin_ore.json
+4b44f1d730bc9993f3b52fc9317046a8a9c2b96e data/igoo/worldgen/configured_feature/titanium_ore.json
+44c779ba433e996354829ba1c2c72c4271a8c747 data/igoo/worldgen/configured_feature/tungsten_ore.json
+c108c7029eff768c323846c4a26ccf0f910b5609 data/igoo/worldgen/placed_feature/aluminum_ore_placed.json
+978a99bad08898bee1b64d5c1394bc67e30a7cba data/igoo/worldgen/placed_feature/chromium_ore_placed.json
+0cb5a531d77b810248233d4d36b055f94e6747e9 data/igoo/worldgen/placed_feature/tin_ore_placed.json
+9eb4281d0f37c087d9974cc9e89779f36f49e8b4 data/igoo/worldgen/placed_feature/titanium_ore_placed.json
+6f4c8c18b3ac270e6ba28f9a0ae11de7ad81aac0 data/igoo/worldgen/placed_feature/tungsten_ore_placed.json

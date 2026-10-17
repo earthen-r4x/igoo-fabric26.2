@@ -3,8 +3,9 @@
     "igoo:aluminum_block",
     "igoo:bronze_block",
     "igoo:carbon_steel_block",
+    "igoo:chromium_block",
     "igoo:tin_block",
-    "igoo:aluminum_ore",
+    "igoo:chromium_ore",
     "igoo:tin_ore"
   ]
 }
