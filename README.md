@@ -144,7 +144,7 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 ### 1️⃣ Clone dự án
 
 ```bash
-git clone https://github.com/earthen-r4x/minecraft-hardcore-fabric26.2.git
+git clone https://github.com/earthen-r4x/igoo-fabric26.2.git
 cd igoo-template-26.2
 ```
 
