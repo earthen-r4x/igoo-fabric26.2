@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:milk_bucket",
+    "minecraft:wheat",
+    "minecraft:wheat",
+    "minecraft:wheat"
+  ],
+  "result": {
+    "id": "igoo:cheese_full"
+  }
+}

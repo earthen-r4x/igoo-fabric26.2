@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "experience": 0.35,
+  "group": "chicken_wing",
+  "ingredient": "igoo:chicken_wing",
+  "result": {
+    "id": "igoo:chicken_wing_cooked"
+  }
+}

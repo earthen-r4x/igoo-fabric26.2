@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "igoo:chromium_ingot",
+    "|": "minecraft:stick"
+  },
+  "pattern": [
+    "XX",
+    "| ",
+    "| "
+  ],
+  "result": {
+    "id": "igoo:chromium_hoe"
+  }
+}

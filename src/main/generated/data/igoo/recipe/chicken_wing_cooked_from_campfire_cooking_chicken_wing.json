@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "group": "chicken_wing",
+  "ingredient": "igoo:chicken_wing",
+  "result": {
+    "id": "igoo:chicken_wing_cooked"
+  }
+}

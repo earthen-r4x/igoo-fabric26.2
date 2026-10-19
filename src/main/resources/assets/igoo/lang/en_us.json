@@ -58,5 +58,14 @@
     "item.igoo.tungsten_axe": "Tungsten Axe",
     "item.igoo.tungsten_shovel": "Tungsten Shovel",
     "item.igoo.tungsten_hoe": "Tungsten Hoe",
-    "creativemodetab.igoo.tools": "Tools"
+    "creativemodetab.igoo.tools": "Tools",
+    
+    "item.igoo.chicken_wing": "Raw Chicken Wing",
+    "item.igoo.chicken_wing_cooked": "Cooked Chicken Wing",
+    "item.igoo.pork": "Raw Pork",
+    "item.igoo.pork_cooked": "Cooked Pork",
+    "item.igoo.baguette": "Baguette",
+    "item.igoo.cheese_full": "Block of Cheese",
+    "item.igoo.cheese_slice": "Cheese Slice",
+    "creativemodetab.igoo.foods": "Foods"
 }

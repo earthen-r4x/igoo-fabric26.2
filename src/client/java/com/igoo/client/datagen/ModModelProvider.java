@@ -18,6 +18,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
         ModItems.ALL_ITEMS.forEach(item -> itemModelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM));
+        ModItems.ALL_FOODS.forEach(food -> itemModelGenerator.generateFlatItem(food, ModelTemplates.FLAT_HANDHELD_ITEM));
         ModItems.ALL_TOOLS.forEach(tool -> itemModelGenerator.generateFlatItem(tool, ModelTemplates.FLAT_HANDHELD_ITEM));
     }
 }

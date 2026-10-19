@@ -20,6 +20,16 @@ public class ModCreativeModeTabs {
     .displayItems((parameters, output) -> {ModItems.ALL_ITEMS.forEach(output::accept);})
                     
     .build());
+
+//    Food
+    public static final CreativeModeTab FOOD_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "foods"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Chicken_wing))
+    .title(Component.translatable("creativemodetab.igoo.foods"))
+    .displayItems((parameters, output) -> {ModItems.ALL_FOODS.forEach(output::accept);})
+                    
+    .build());
+
     
 //    Block
     public static final CreativeModeTab BLOCK_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,

@@ -11,13 +11,17 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.Consumables;
 
 public class ModItems {
+//    ==================================== Ingots ==============================================
     // Ingot
     public static final Item Aluminum_ingot = registerItem("aluminum_ingot", Item::new);
     public static final Item Bronze_ingot = registerItem("bronze_ingot", Item:: new);
@@ -123,7 +127,27 @@ public class ModItems {
         return registerItem(base + "_hoe", p -> new HoeItem(mat, -3.0f, 0.0f, p));
     }
     
-//    =====================================================================================================
+//    ================================================= Foods =================================================
+    //  Khai báo thuộc tính thức ăn
+    public static final FoodProperties RAW_MEAT             = new FoodProperties.Builder().nutrition(3).saturationModifier(0.3f).build();
+    public static final FoodProperties COOKED_MEAT          = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8f).build();
+    public static final FoodProperties BAGUETTE_FOOD        = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6f).build();
+    public static final FoodProperties CHEESE_FULL_FOOD     = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8f).build();
+    public static final FoodProperties CHEESE_SLICE_FOOD    = new FoodProperties.Builder().nutrition(2).saturationModifier(0.3f).build();
+
+    // Consumable cho thức ăn
+    public static final Consumable DEFAULT_FOOD  = Consumables.defaultFood().build();
+    public static final Consumable FAST_FOOD     = Consumables.defaultFood().consumeSeconds(0.8f) .build();
+    
+    public static final Item Chicken_wing        = registerItem("chicken_wing", p -> new Item(p.food(RAW_MEAT, DEFAULT_FOOD)));
+    public static final Item Chicken_wing_cooked = registerItem("chicken_wing_cooked", p -> new Item(p.food(COOKED_MEAT, DEFAULT_FOOD)));
+    public static final Item Pork                = registerItem("pork", p -> new Item(p.food(RAW_MEAT, DEFAULT_FOOD)));
+    public static final Item Pork_cooked         = registerItem("pork_cooked", p -> new Item(p.food(COOKED_MEAT, DEFAULT_FOOD)));
+    public static final Item Baguette            = registerItem("baguette", p -> new Item(p.food(BAGUETTE_FOOD, DEFAULT_FOOD)));
+    public static final Item Cheese_full         = registerItem("cheese_full", p -> new Item(p.food(CHEESE_FULL_FOOD, DEFAULT_FOOD)));
+    public static final Item Cheese_slice        = registerItem("cheese_slice", p -> new Item(p.food(CHEESE_SLICE_FOOD, FAST_FOOD)));
+    
+    public static final List<Item> ALL_FOODS = List.of(Chicken_wing, Chicken_wing_cooked, Pork, Pork_cooked, Baguette, Cheese_full, Cheese_slice);
     
     public static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name),

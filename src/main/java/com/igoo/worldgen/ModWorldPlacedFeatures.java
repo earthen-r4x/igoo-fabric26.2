@@ -5,11 +5,9 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
-import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
@@ -30,31 +28,30 @@ public class ModWorldPlacedFeatures {
     public static void configure(BootstrapContext<PlacedFeature> context) {
         HolderGetter<net.minecraft.world.level.levelgen.feature.ConfiguredFeature<?, ?>> configured = context.lookup(Registries.CONFIGURED_FEATURE);
 
-        // --- NHÔM ---
-        // Sinh 12 mạch mỗi chunk, độ cao từ 0 đến 128 (phân bố đều)
+//        Aluminum
+        HeightProvider aluminumHeight = TrapezoidHeight.of(VerticalAnchor.absolute(48), VerticalAnchor.absolute(128));
         List<PlacementModifier> aluminumModifiers = List.of(
                 CountPlacement.of(12),
                 InSquarePlacement.spread(),
-                HeightRangePlacement.of(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.absolute(128))),
+                HeightRangePlacement.of(aluminumHeight),
                 BiomeFilter.biome()
         );
         context.register(ALUMINUM_ORE_PLACED_KEY, new PlacedFeature(
                 configured.getOrThrow(ModWorldConfiguredFeatures.ALUMINUM_ORE_KEY), aluminumModifiers));
 
-        // --- THIẾC ---
-        // Sinh 10 mạch mỗi chunk, độ cao từ 0 đến 96
+//        Tin
+        HeightProvider tinHeight = TrapezoidHeight.of(VerticalAnchor.absolute(24), VerticalAnchor.absolute(96));
         List<PlacementModifier> tinModifiers = List.of(
                 CountPlacement.of(10),
                 InSquarePlacement.spread(),
-                HeightRangePlacement.of(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.absolute(96))),
+                HeightRangePlacement.of(tinHeight),
                 BiomeFilter.biome()
         );
         context.register(TIN_ORE_PLACED_KEY, new PlacedFeature(
                 configured.getOrThrow(ModWorldConfiguredFeatures.TIN_ORE_KEY), tinModifiers));
 
-        // --- CROM ---
-        // Sinh 6 mạch mỗi chunk, độ cao từ -16 đến 64, tập trung nhiều ở đáy
-        HeightProvider chromiumHeight = TrapezoidHeight.of(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(64));
+//        Chromium
+        HeightProvider chromiumHeight = TrapezoidHeight.of(VerticalAnchor.absolute(8), VerticalAnchor.absolute(48));
         List<PlacementModifier> chromiumModifiers = List.of(
                 CountPlacement.of(6),
                 InSquarePlacement.spread(),
@@ -64,11 +61,11 @@ public class ModWorldPlacedFeatures {
         context.register(CHROMIUM_ORE_PLACED_KEY, new PlacedFeature(
                 configured.getOrThrow(ModWorldConfiguredFeatures.CHROMIUM_ORE_KEY), chromiumModifiers));
 
-        // --- TITAN ---
-        // Sinh 4 mạch mỗi chunk, độ cao từ -48 đến 32
-        HeightProvider titaniumHeight = TrapezoidHeight.of(VerticalAnchor.absolute(-48), VerticalAnchor.absolute(32));
+
+//        Titan
+        HeightProvider titaniumHeight = TrapezoidHeight.of(VerticalAnchor.absolute(4), VerticalAnchor.absolute(24));
         List<PlacementModifier> titaniumModifiers = List.of(
-                CountPlacement.of(4),
+                CountPlacement.of(6),
                 InSquarePlacement.spread(),
                 HeightRangePlacement.of(titaniumHeight),
                 BiomeFilter.biome()
@@ -76,13 +73,12 @@ public class ModWorldPlacedFeatures {
         context.register(TITANIUM_ORE_PLACED_KEY, new PlacedFeature(
                 configured.getOrThrow(ModWorldConfiguredFeatures.TITANIUM_ORE_KEY), titaniumModifiers));
 
-        // --- VONFRAM ---
-        // Sinh 2 mạch mỗi chunk, độ cao từ -64 đến -16 (sâu nhất, như cổ đại)
-        HeightProvider tungstenHeight = TrapezoidHeight.of(VerticalAnchor.bottom(), VerticalAnchor.absolute(-16));
+//        Tungsten
+        HeightProvider tugnstenHeight = TrapezoidHeight.of(VerticalAnchor.absolute(0), VerticalAnchor.absolute(128));
         List<PlacementModifier> tungstenModifiers = List.of(
-                CountPlacement.of(2),
+                CountPlacement.of(6),
                 InSquarePlacement.spread(),
-                HeightRangePlacement.of(tungstenHeight),
+                HeightRangePlacement.of(tugnstenHeight),
                 BiomeFilter.biome()
         );
         context.register(TUNGSTEN_ORE_PLACED_KEY, new PlacedFeature(

@@ -14,7 +14,7 @@
     "item.igoo.raw_tin": "Thiếc thô",
     "item.igoo.raw_titanium": "Titan thô",
     "item.igoo.raw_tungsten": "Vonfram thô",
-    "creativemodetab.igoo.aluminum_items": "Vật liệu",
+    "creativemodetab.igoo.items": "Vật liệu",
     
     "block.igoo.aluminum_block": "Khối Nhôm",
     "block.igoo.bronze_block": "Khối Đồng Thiếc",
@@ -31,7 +31,7 @@
     "block.igoo.tin_ore": "Quặng Thiếc",
     "block.igoo.titanium_ore": "Quặng Titan",
     "block.igoo.tungsten_ore": "Quặng Vonfram",
-    "creativemodetab.igoo.aluminum_blocks": "Khối",
+    "creativemodetab.igoo.blocks": "Khối",
     
     "item.igoo.aluminum_sword": "Kiếm Nhôm",
     "item.igoo.aluminum_pickaxe": "Cuốc Chim Nhôm",
@@ -58,5 +58,14 @@
     "item.igoo.tungsten_axe": "Rìu Vonfram",
     "item.igoo.tungsten_shovel": "Xẻng Vonfram",
     "item.igoo.tungsten_hoe": "Cuốc Vonfram",
-    "creativemodetab.igoo.aluminum_tools": "Dụng cụ"
+    "creativemodetab.igoo.tools": "Dụng cụ",
+    
+    "item.igoo.chicken_wing": "Cánh Gà Sống",
+    "item.igoo.chicken_wing_cooked": "Cánh Gà Chín",
+    "item.igoo.pork": "Thịt Heo Sống",
+    "item.igoo.pork_cooked": "Thịt Heo Chín",
+    "item.igoo.baguette": "Bánh Mì Pháp",
+    "item.igoo.cheese_full": "Phô Mai Nguyên Khối",
+    "item.igoo.cheese_slice": "Phô Mai Lát",
+    "creativemodetab.igoo.foods": "Thức ăn"
 }

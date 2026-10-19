@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "group": "pork",
+  "ingredient": "igoo:pork",
+  "result": {
+    "id": "igoo:pork_cooked"
+  }
+}
