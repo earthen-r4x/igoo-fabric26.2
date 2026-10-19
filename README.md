@@ -335,7 +335,7 @@ public static final Block MY_BLOCK = registerBlock("my_block",
 
 - Bước 3: Đăng ký với Biome trong hàm onInitialize() của Igoo.java thông qua BiomeModifications.addFeature().
 
-###🎨 Quy ước đặt tên
+### 🎨 Quy ước đặt tên
 
 | Loại | Quy ước | Ví dụ |
 | --- | --- | --- |
