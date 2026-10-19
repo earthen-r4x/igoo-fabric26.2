@@ -89,7 +89,7 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 | Block of Cheese | `cheese_full` | Phô mai nguyên khối (Từ Sữa + Lúa mì) |
 | Cheese Slice | `cheese_slice` | Phô mai lát (Cắt từ khối, ăn nhanh) |
 
-### 🪨 Khối & Quặng (Blocks & Ores)
+### 💎 Khối & Quặng (Blocks & Ores)
 
 **Khối kim loại (Metal Blocks):**
 | Tên | ID | Yêu cầu dụng cụ |
