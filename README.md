@@ -37,7 +37,7 @@
 Mod được phát triển với mục tiêu:
 - 🎯 Cân bằng giữa vanilla và modded gameplay
 - ⚡ Hiệu năng cao, không gây lag
-- 🧩 Dễ mở rộng, code sạch và có tài liệu
+- 🧩 Dễ mở rộng và có tài liệu
 - 🌐 Hỗ trợ đa ngôn ngữ (Anh / Việt)
 
 ---
