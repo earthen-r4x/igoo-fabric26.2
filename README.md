@@ -44,7 +44,7 @@ Mod được phát triển với mục tiêu:
 
 ## ✨ Tính năng
 
-### 🔩 Vật phẩm hiện có (Items)
+### 🔩 Nguyên liệu (Materials)
 | Tên | ID | Mô tả |
 | --- | --- | --- |
 | Aluminum Ingot | `aluminum_ingot` | Thỏi nhôm – nhẹ |
@@ -57,28 +57,71 @@ Mod được phát triển với mục tiêu:
 | Titanium Ingot | `titanium_ingot` | Thỏi titan – kim loại quý, độ bền cao |
 | Tungsten Carbide Ingot | `tungsten_carbide_ingot` | Thép vonfram – cực cứng |
 | Tungsten Ingot | `tungsten_ingot` | Thỏi vonfram – kim loại nặng |
+| Raw Aluminum | `raw_aluminum` | Nhôm thô |
+| Raw Chromium | `raw_chromium` | Crom thô |
+| Raw Tin | `raw_tin` | Thiếc thô |
+| Raw Titanium | `raw_titanium` | Titan thô |
+| Raw Tungsten | `raw_tungsten` | Vonfram thô |
 
-### 🔩 Khối hiện có (Blocks)
-| Tên | ID |Mô tả |
+### ⚔️ Dụng cụ (Tools)
+Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻng, Cuốc) cho 5 kim loại chính. Mỗi loại có cấp độ (Tier) tương ứng:
+- **Nhôm (Aluminum):** Cấp Gỗ (Yếu nhưng độ bền tốt hơn).
+- **Thiếc (Tin) & Crom (Chromium):** Cấp Đá.
+- **Titan (Titanium):** Cấp Kim cương.
+- **Vonfram (Tungsten):** Cấp Netherite (Cực mạnh).
+
+| Tên | ID |
+| --- | --- |
+| Aluminum Sword / Pickaxe / Axe / Shovel / Hoe | `aluminum_sword`, `aluminum_pickaxe`, ... |
+| Tin Sword / Pickaxe / Axe / Shovel / Hoe | `tin_sword`, `tin_pickaxe`, ... |
+| Chromium Sword / Pickaxe / Axe / Shovel / Hoe | `chromium_sword`, `chromium_pickaxe`, ... |
+| Titanium Sword / Pickaxe / Axe / Shovel / Hoe | `titanium_sword`, `titanium_pickaxe`, ... |
+| Tungsten Sword / Pickaxe / Axe / Shovel / Hoe | `tungsten_sword`, `tungsten_pickaxe`, ... |
+
+### 🍖 Thức ăn (Foods)
+| Tên | ID | Mô tả |
 | --- | --- | --- |
-| Aluminum Block | `aluminum_block` | Khối nhôm |
-| Bronze Block | `bronze_block` | Khối đồng thiếc |
-| Carbon Steel Block | `carbon_steel_block` | Khối thép carbon |
-| Chromium Block | `chromium_block` | Khối crom |
-| Stainless Steel Block | `stainless_steel_block` | Khối thép không gỉ |
-| Tin Block | `tin_block` | Khối thiếc |
-| Titanium Alloy Block | `titanium_alloy_block` | Khối hợp kim titan |
-| Titanium Block | `titanium_block` | Khối titan |
-| Tungsten Block | `tungsten_block` | Khối vonfram |
-| Tungsten Carbide Block| `tungsten_carbide_block` | Khối thép vonfram |
+| Raw Chicken Wing | `chicken_wing` | Cánh gà sống |
+| Cooked Chicken Wing | `chicken_wing_cooked` | Cánh gà chín (Nung, Hun khói, Lửa trại) |
+| Raw Pork | `pork` | Thịt heo sống |
+| Cooked Pork | `pork_cooked` | Thịt heo chín (Nung, Hun khói, Lửa trại) |
+| Baguette | `baguette` | Bánh mì Pháp (Nướng từ 1 Kiện Rơm) |
+| Block of Cheese | `cheese_full` | Phô mai nguyên khối (Từ Sữa + Lúa mì) |
+| Cheese Slice | `cheese_slice` | Phô mai lát (Cắt từ khối, ăn nhanh) |
+
+### 🪨 Khối & Quặng (Blocks & Ores)
+
+**Khối kim loại (Metal Blocks):**
+| Tên | ID | Yêu cầu dụng cụ |
+| --- | --- | --- |
+| Aluminum Block | `aluminum_block` | Cấp Đá |
+| Bronze Block | `bronze_block` | Cấp Đá |
+| Carbon Steel Block | `carbon_steel_block` | Cấp Đá |
+| Chromium Block | `chromium_block` | Cấp Đá |
+| Stainless Steel Block | `stainless_steel_block` | Cấp Sắt |
+| Tin Block | `tin_block` | Cấp Đá |
+| Titanium Alloy Block | `titanium_alloy_block` | Cấp Kim cương |
+| Titanium Block | `titanium_block` | Cấp Kim cương |
+| Tungsten Block | `tungsten_block` | Cấp Kim cương |
+| Tungsten Carbide Block| `tungsten_carbide_block` | Cấp Kim cương |
+
+**Quặng tự nhiên (Ores):**
+| Tên | ID | Yêu cầu dụng cụ | Rơi ra |
+| --- | --- | --- | --- |
+| Aluminum Ore | `aluminum_ore` | Cấp Gỗ | Raw Aluminum (2-5) |
+| Tin Ore | `tin_ore` | Cấp Đá | Raw Tin (2-4) |
+| Chromium Ore | `chromium_ore` | Cấp Đá | Raw Chromium (1-2) |
+| Titanium Ore | `titanium_ore` | Cấp Kim cương | Raw Titanium (1-2) |
+| Tungsten Ore | `tungsten_ore` | Cấp Kim cương | Raw Tungsten (1) |
 
 ### 🚧 Tính năng dự kiến
 
-- [ ] Dụng cụ (Pickaxe, Axe, Shovel, Sword, Hoe) cho mỗi loại kim loại
+- [x] Dụng cụ (Pickaxe, Axe, Shovel, Sword, Hoe) cho mỗi loại kim loại
 - [ ] Giáp (Helmet, Chestplate, Leggings, Boots) cho mỗi loại kim loại
-- [ ] Công thức chế tạo cho lò nung (Furnace) và bàn chế tạo (Crafting Table)
+- [x] Công thức chế tạo cho lò nung (Furnace) và bàn chế tạo (Crafting Table)
 - [ ] Hệ thống máy móc / năng lượng
 - [ ] Cây trồng và thực phẩm mới
+- [x] Thức ăn
 
 ---
 
@@ -136,43 +179,60 @@ build/libs/igoo-<version>.jar
 
 4. Khởi động game với profile Fabric
 
---- 
+---
+
 ## 📁 Cấu trúc dự án
 
-```
+```text
 igoo-template-26.2/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/igoo/
-│   │   │   ├── Igoo.java                 # Entry point chính của mod
+│   │   │   ├── Igoo.java                 # Entry point chính (Đăng ký item, block, biome, worldgen)
+│   │   │   ├── block/
+│   │   │   │   └── ModBlocks.java        # Đăng ký khối, quặng và phân loại cấp độ dụng cụ
 │   │   │   ├── item/
-│   │   │   │   └── ModItems.java         # Đăng ký tất cả vật phẩm
-│   │   │   ├── block/                    # Đăng ký khối (dự kiến)
-│   │   │   │   └── ModBlocks.java
-│   │   │   └── util/                     # Các tiện ích
-│   │   ├── resources/
-│   │   │   ├── fabric.mod.json           # Metadata của mod
-│   │   │   └── assets/igoo/
-│   │   │       ├── lang/                 # File ngôn ngữ
-│   │   │       │   ├── en_us.json
-│   │   │       │   └── vi_vn.json
-│   │   │       ├── textures/item/        # Ảnh texture 16x16
-│   │   │       │   ├── aluminum_ingot.png
-│   │   │       │   └── ...
-│   │   │       └── models/               # Model (được sinh tự động)
-│   │   └── ...
+│   │   │   │   ├── ModItems.java         # Đăng ký vật phẩm, dụng cụ, thức ăn
+│   │   │   │   └── ModToolMaterials.java # Cấu hình thông số vật liệu dụng cụ (độ bền, tốc độ,...)
+│   │   │   ├── creativemodtab/
+│   │   │   │   └── ModCreativeModeTabs.java # Đăng ký các tab sáng tạo (Materials, Tools, Blocks)
+│   │   │   └── worldgen/
+│   │   │       ├── ModWorldConfiguredFeatures.java # Cấu hình kích thước, khối bị thay thế của quặng
+│   │   │       └── ModWorldPlacedFeatures.java     # Cấu hình tần suất và độ cao (Y-level) sinh quặng
+│   │   │
+│   │   └── resources/
+│   │       ├── fabric.mod.json           # Metadata của mod
+│   │       └── assets/igoo/
+│   │           ├── lang/                 # File ngôn ngữ
+│   │           │   ├── en_us.json
+│   │           │   └── vi_vn.json
+│   │           └── textures/
+│   │               ├── item/             # Ảnh texture 16x16 cho vật phẩm/dụng cụ/thức ăn
+│   │               └── block/            # Ảnh texture cho khối/quặng
+│   │
 │   ├── client/
 │   │   └── java/com/igoo/client/
-│   │       ├── IgooClient.java
-│   │       └── datagen/
-│   │           ├── IgooDataGenerator.java
-│   │           └── ModModelProvider.java
+│   │       ├── IgooClient.java           # Entry point phía Client
+│   │       └── datagen/                  # Hệ thống sinh dữ liệu tự động (Datagen)
+│   │           ├── IgooDataGenerator.java        # Điểm khởi chạy Datagen
+│   │           ├── ModBlockTagsProvider.java     # Sinh tag cho khối (cấp độ dụng cụ)
+│   │           ├── ModItemTagsProvider.java      # Sinh tag cho vật phẩm (Swords, Pickaxes,...)
+│   │           ├── ModBlockLootTableProvider.java # Sinh bảng rơi đồ (loot table) cho quặng/khối
+│   │           ├── ModModelProvider.java         # Sinh model cho vật phẩm
+│   │           ├── ModRecipeProvider.java        # Sinh công thức chế tạo và nấu ăn
+│   │           └── ModWorldgenProvider.java      # Sinh file cấu hình worldgen
+│   │
 │   └── main/resources/
-│       └── igoo.mixins.json
+│       └── igoo.mixins.json              # Cấu hình Mixin
+│
+├── src/main/generated/                   # Thư mục chứa dữ liệu sinh ra tự động (KHÔNG SỬA TAY)
+│   ├── assets/igoo/                      # Models, Blockstates, Items (do ModModelProvider sinh)
+│   └── data/igoo/                        # Recipes, Loot Tables, Tags, Worldgen (do Datagen sinh)
+│
 ├── build/
-│   └── libs/                             # File .jar sau khi build
-├── build.gradle                          # Cấu hình build
-├── gradle.properties                     # Phiên bản Minecraft, Fabric...
+│   └── libs/                             # Chứa file .jar sau khi build thành công
+├── build.gradle                          # Cấu hình build của Gradle
+├── gradle.properties                     # Khai báo phiên bản Minecraft, Fabric, Java
 ├── settings.gradle
 ├── gradlew / gradlew.bat                 # Gradle wrapper
 ├── README.md
@@ -183,56 +243,111 @@ igoo-template-26.2/
 
 ## 🛠️ Hướng dẫn phát triển
 
-### ➕ Thêm vật phẩm mới
+Dự án này sử dụng **Fabric Datagen** để tự động sinh ra các file JSON (Model, Blockstate, Recipe, Loot Table, Tags, Worldgen). Điều này giúp hạn chế tối đa việc phải viết tay các file cấu hình.
 
-- Bước 1: Đăng ký item trong ModItems.java
-``` java
-public static final Item MY_NEW_ITEM = register("my_new_item");
-```
+### ➕ 1. Thêm Vật phẩm cơ bản (Item)
 
-- Bước 2: Thêm model trong ModModelProvider.java
+- **Bước 1:** Đăng ký item trong `src/main/java/com/igoo/item/ModItems.java`:
 ```java
-@Override
-public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-    itemModelGenerator.generateFlatItem(ModItems.MY_NEW_ITEM, ModelTemplates.FLAT_ITEM);
-}
+public static final Item MY_NEW_ITEM = registerItem("my_new_item", Item::new);
+// Nhớ thêm MY_NEW_ITEM vào danh sách ALL_ITEMS
 ```
 
-- Bước 3: Thêm tên hiển thị trong lang/en_us.json
-```json
-{
-  "item.igoo.my_new_item": "My New Item"
-}
+- Bước 2: Thêm model trong src/client/java/com/igoo/client/datagen/ModModelProvider.java:
+
+```java
+itemModelGenerator.generateFlatItem(ModItems.MY_NEW_ITEM, ModelTemplates.FLAT_ITEM);
 ```
-- Và lang/vi_vn.json:
+
+- Bước 3: Thêm tên hiển thị vào 2 file ngôn ngữ lang/en_us.json và lang/vi_vn.json:
 
 ```json
-{
-  "item.igoo.my_new_item": "Vật Phẩm Mới"
-}
+"item.igoo.my_new_item": "My New Item"
 ```
 
-- Bước 4: Thêm texture
--- Đặt file ảnh 16x16 PNG vào:
+- Bước 4: Tạo file ảnh 16x16 .png và đặt vào src/main/resources/assets/igoo/textures/item/my_new_item.png.
 
-```text
-src/main/resources/assets/igoo/textures/item/my_new_item.png
+- Bước 5: Chạy lệnh ./gradlew runDatagen để sinh file JSON model.
+
+### ⚔️ 2. Thêm Dụng cụ mới (Tool)
+
+- Bước 1: Khai báo vật liệu trong ModToolMaterials.java:
+
+```java
+public static final ToolMaterial MY_MATERIAL = new ToolMaterial(
+    BlockTags.INCORRECT_FOR_IRON_TOOL, 500, 7.0f, 2.0f, 15,
+    TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "my_ingot"))
+);
 ```
 
-- Bước 5: Sinh lại tài nguyên
-```bash
-./gradlew runDatagen
+- Bước 2: Đăng ký item trong ModItems.java (Sử dụng API mới của 26.2, không dùng SwordItem hay PickaxeItem nữa):
+
+```java
+public static final Item MY_SWORD = registerItem("my_sword", p -> new Item(p.sword(MY_MATERIAL, 3.0f, -2.4f)));
+public static final Item MY_PICKAXE = registerItem("my_pickaxe", p -> new Item(p.pickaxe(MY_MATERIAL, 1.0f, -2.8f)));
+// Nhớ thêm vào ALL_ITEMS và ALL_TOOLS
 ```
 
-### 🎨 Quy ước đặt tên
+- Bước 3: Thêm model với ModelTemplates.FLAT_HANDHELD_ITEM (để cầm đúng hướng) trong ModModelProvider.java.
+
+- Bước 4: Thêm công thức chế tạo vào ModRecipeProvider.java và thêm vào Tag công cụ (Swords, Pickaxes,...) trong ModItemTagsProvider.java.
+
+### 🍖 3. Thêm Thức ăn mới (Food)
+
+- Bước 1: Khai báo FoodProperties (độ no) và Consumable (thời gian ăn) trong ModItems.java:
+
+```java
+public static final FoodProperties MY_FOOD_PROPS = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6f).build();
+public static final Consumable MY_CONSUMABLE = Consumables.defaultFood().build(); // Mặc định 1.6s, dùng consumeSeconds(0.8f) để ăn nhanh
+```
+
+- Bước 2: Đăng ký item với cả 2 thuộc tính:
+
+```java
+public static final Item MY_FOOD = registerItem("my_food", p -> new Item(p.food(MY_FOOD_PROPS, MY_CONSUMABLE)));
+```
+
+- Bước 3: Thêm công thức nấu/hun khói/lửa trại vào ModRecipeProvider.java bằng hàm cookFood() có sẵn.
+
+### 🧱 4. Thêm Khối hoặc Quặng mới (Block/Ore)
+
+- Bước 1: Đăng ký block trong ModBlocks.java:
+
+```java
+public static final Block MY_BLOCK = registerBlock("my_block", 
+  properties -> new Block(properties.strength(3.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+// Nhớ thêm vào ALL_BLOCKS và list phân loại cấp độ (MINE_WITH_STONE, MINE_WITH_IRON, v.v.)
+```
+
+- Bước 2: Thêm model khối (thường là registerSimpleCubeAll) trong ModModelProvider.java.
+
+- Bước 3: Khai báo Loot Table (rơi ra gì) trong ModBlockLootTableProvider.java.
+
+- Bước 4: Thêm công thức chế tạo trong ModRecipeProvider.java.
+
+- Bước 5: Chạy ./gradlew runDatagen.
+
+### 🌍 5. Thêm Quặng vào Worldgen
+
+- Bước 1: Khai báo cấu hình kích thước mạch quặng trong ModWorldConfiguredFeatures.java.
+
+- Bước 2: Khai báo tần suất và độ cao (Y-level) trong ModWorldPlacedFeatures.java.
+
+- Bước 3: Đăng ký với Biome trong hàm onInitialize() của Igoo.java thông qua BiomeModifications.addFeature().
+
+###🎨 Quy ước đặt tên
 
 | Loại | Quy ước | Ví dụ |
 | --- | --- | --- |
-| Class Java | PascalCase | `ModItems`, `ModBlocks`
-| Hằng số | SCREAMING_SNAKE_CASE | `ALUMINUM_INGOT`
-| ID vật phẩm | snake_case | `aluminum_ingot`
-| File texture | snake_case | `aluminum_ingot.png`
-| Package | lowercase | `com.igoo.item`
+| Class Java | PascalCase | ModItems, ModBlocks |
+| Hằng số (Biến static) | SCREAMING_SNAKE_CASE | ALUMINUM_INGOT |
+| ID vật phẩm / Khối | snake_case (chữ thường) | aluminum_ingot |
+| File texture | snake_case | aluminum_ingot.png |
+| Package | lowercase | com.igoo.item |
+
+> [!IMPORTANT]
+> Tuyệt đối không sửa trực tiếp các file trong thư mục src/main/generated/.
+> Mọi thay đổi phải được thực hiện thông qua code Java trong thư mục src/client/java/com/igoo/client/datagen/ và chạy lại lệnh runDatagen.
 
 ### 📦 Thêm dependency mới
 
@@ -256,9 +371,11 @@ Sau khi chạy `./gradlew runClient`:
 
 1. Mở Creative Inventory (phím E)
 
-2. Vào tab Ingredients (biểu tượng nguyên liệu)
+2. Nhấn vào phím mũi tên ở dưới nút tìm kiếm vật phẩm
 
-3. Tìm các vật phẩm của mod với tiền tố igoo:
+3. Lựa chọn tab khối, vật liệu,...
+
+4. Tìm các vật phẩm mà bạn muốn
 
 ### ⌨️ Phím tắt hữu ích khi phát triển
 
