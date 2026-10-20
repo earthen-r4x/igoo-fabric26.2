@@ -37,7 +37,7 @@
 Mod được phát triển với mục tiêu:
 - 🎯 Cân bằng giữa vanilla và modded gameplay
 - ⚡ Hiệu năng cao, không gây lag
-- 🧩 Dễ mở rộng, code sạch và có tài liệu
+- 🧩 Dễ mở rộng và có tài liệu
 - 🌐 Hỗ trợ đa ngôn ngữ (Anh / Việt)
 
 ---
@@ -89,7 +89,7 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 | Block of Cheese | `cheese_full` | Phô mai nguyên khối (Từ Sữa + Lúa mì) |
 | Cheese Slice | `cheese_slice` | Phô mai lát (Cắt từ khối, ăn nhanh) |
 
-### 🪨 Khối & Quặng (Blocks & Ores)
+### 💎 Khối & Quặng (Blocks & Ores)
 
 **Khối kim loại (Metal Blocks):**
 | Tên | ID | Yêu cầu dụng cụ |
@@ -144,7 +144,7 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 ### 1️⃣ Clone dự án
 
 ```bash
-git clone https://github.com/earthen-r4x/minecraft-hardcore-fabric26.2.git
+git clone https://github.com/earthen-r4x/igoo-fabric26.2.git
 cd igoo-template-26.2
 ```
 
