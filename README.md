@@ -7,7 +7,7 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-26.2-4CAF50?style=for-the-badge&logo=minecraft)](https://minecraft.net)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader-DBB69C?style=for-the-badge)](https://fabricmc.net)
 [![Java](https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk)](https://openjdk.org)
-[![License](https://img.shields.io/badge/License-Creative--Commons-yellow?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL-yellow?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -442,30 +442,26 @@ Khi báo cáo bug, vui lòng cung cấp:
 ---
 
 ## 📜 Giấy phép
-Dự án này được phát hành theo giấy phép MIT License.
+Dự án này được phát hành theo giấy phép GPLv3.
 
 ```text
-MIT License
+IGOO mod - Một mod Minecraft Fabric mở rộng hệ thống kim loại,
+hợp kim và vật phẩm chế tạo, cũng như gia tăng độ khó cho việc sinh tồn.
 
-Copyright (c) 2026 Igoo
+Copyright (C) 2026 earthen-r4x
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
 ---
