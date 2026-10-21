@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import com.igoo.item.ModItems;
 import com.igoo.block.ModBlocks;
+import com.igoo.entity.ModEntities;
 import com.igoo.worldgen.ModWorldPlacedFeatures;
+import com.igoo.event.AltarSummonEvent;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -23,6 +25,8 @@ public class Igoo implements ModInitializer {
         ModCreativeModeTabs.registerModCreativeModeTabs();
 	ModItems.registerModItems();
 	ModBlocks.registerModBlocks();
+        ModEntities.registerModEntities();
+        AltarSummonEvent.register();
         
         BiomeModifications.addFeature(
                 BiomeSelectors.foundInOverworld(),

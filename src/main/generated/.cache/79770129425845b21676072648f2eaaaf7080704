@@ -5,6 +5,8 @@ f0fdc062937abeaefa5ce5c90a56852b8da7d7d7 data/igoo/loot_table/blocks/aluminum_or
 45c7bd2ed48269d57ea4bf3cb5ebd8691e62bbdb data/igoo/loot_table/blocks/carbon_steel_block.json
 23ec54ac2ef080a22a8b856b7a2d9181eb3d6698 data/igoo/loot_table/blocks/chromium_block.json
 26099622cd11d5c12c18351ccfb1eebc361a438e data/igoo/loot_table/blocks/chromium_ore.json
+ca2ca48cf97c23b2ca66f029afef8c6a4e918b51 data/igoo/loot_table/blocks/cursed_dirt.json
+a8ec8d3a4c6612102512f4fe52250da1fd26c8a7 data/igoo/loot_table/blocks/cursed_grass_block.json
 db950c764d9c0b1da05e261112310f7f61d1e09b data/igoo/loot_table/blocks/stainless_steel_block.json
 633ab6f7ef8d6d3f156596f72da68cf6b782e3f3 data/igoo/loot_table/blocks/tin_block.json
 9dd240447bc4ee4bd51676e8c0cdeb0318aab027 data/igoo/loot_table/blocks/tin_ore.json

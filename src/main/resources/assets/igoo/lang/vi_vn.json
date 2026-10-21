@@ -67,5 +67,17 @@
     "item.igoo.baguette": "Bánh mì Pháp",
     "item.igoo.cheese_full": "Phô mai nguyên khối",
     "item.igoo.cheese_slice": "Phô mai lát",
-    "creativemodetab.igoo.foods": "Thức ăn"
+    "creativemodetab.igoo.foods": "Thức ăn",
+    
+    "entity.igoo.herobrine": "Herobrine",
+    "item.igoo.herobrine_spawn_egg": "Trứng triệu hồi Herobrine",
+    "message.igoo.herobrine.summoning": "§eHerobrine đang triệu hồi...",
+    "message.igoo.herobrine.summoned": "§cHerobrine đã thức tỉnh!",
+    "message.igoo.herobrine.skill.teleport": "§4§lNgươi không thể trốn khỏi ta!",
+    "message.igoo.herobrine.skill.lightning": "§4§lSấm sét sẽ trừng phạt ngươi!",
+    "message.igoo.herobrine.skill.curse": "§4§lBóng tối sẽ nuốt chửng ngươi!",
+    "message.igoo.herobrine.skill.undead": "§4§lThức tỉnh đi, những kẻ phục tùng ta!",
+    "message.igoo.herobrine.skill.fear": "§4§lHãy run sợ trước sức mạnh của ta!",
+    "entity.igoo.cursed_herobrine": "Herobrine Bị Nguyền Rủa",
+    "message.igoo.herobrine.cursed_summoned": "§4§lNgươi đã triệu hồi ta tại mảnh đất bị nguyền rủa... Ngươi sẽ chết thảm hơn gấp mười lần!"
 }

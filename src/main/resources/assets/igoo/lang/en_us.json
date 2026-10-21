@@ -67,5 +67,19 @@
     "item.igoo.baguette": "Baguette",
     "item.igoo.cheese_full": "Block of cheese",
     "item.igoo.cheese_slice": "Cheese slice",
-    "creativemodetab.igoo.foods": "Foods"
+    "creativemodetab.igoo.foods": "Foods",
+    
+    
+    
+    "entity.igoo.herobrine": "Herobrine",
+    "item.igoo.herobrine_spawn_egg": "Herobrine Spawn Egg",
+    "message.igoo.herobrine.summoning": "§eHerobrine is being summoned...",
+    "message.igoo.herobrine.summoned": "§cHerobrine has awakened!",
+    "message.igoo.herobrine.skill.teleport": "§4§lYou cannot hide from me!",
+    "message.igoo.herobrine.skill.lightning": "§4§lThe heavens will strike you down!",
+    "message.igoo.herobrine.skill.curse": "§4§lThe darkness will consume you!",
+    "message.igoo.herobrine.skill.undead": "§4§lArise, my loyal servants!",
+    "message.igoo.herobrine.skill.fear": "§4§lTremble before my power!",
+    "entity.igoo.cursed_herobrine": "Cursed Herobrine",
+    "message.igoo.herobrine.cursed_summoned": "§4§lYou have summoned me on cursed soil... Your death will be tenfold!"
 }

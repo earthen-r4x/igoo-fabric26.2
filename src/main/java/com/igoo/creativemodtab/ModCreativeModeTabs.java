@@ -18,7 +18,6 @@ public class ModCreativeModeTabs {
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_ingot))
     .title(Component.translatable("creativemodetab.igoo.items"))
     .displayItems((parameters, output) -> {ModItems.ALL_ITEMS.forEach(output::accept);})
-                    
     .build());
 
 //    Food
@@ -27,7 +26,6 @@ public class ModCreativeModeTabs {
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Chicken_wing))
     .title(Component.translatable("creativemodetab.igoo.foods"))
     .displayItems((parameters, output) -> {ModItems.ALL_FOODS.forEach(output::accept);})
-                    
     .build());
 
     
@@ -36,8 +34,10 @@ public class ModCreativeModeTabs {
             Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "blocks"),
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.Aluminum_block))
     .title(Component.translatable("creativemodetab.igoo.blocks"))
-    .displayItems((parameters, output) -> {ModBlocks.ALL_BLOCKS.forEach(output::accept);})
-                    
+    .displayItems((parameters, output) -> {
+        ModBlocks.ALL_BLOCKS.forEach(output::accept);
+        ModBlocks.ALL_ENVIROMENT_BLOCKS.forEach(output::accept);
+        })
     .build());
     
 //    Tools
@@ -46,7 +46,6 @@ public class ModCreativeModeTabs {
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_pickaxe))
     .title(Component.translatable("creativemodetab.igoo.tools"))
     .displayItems((parameters, output) -> {ModItems.ALL_TOOLS.forEach(output::accept);})
-                    
     .build());
     
     public static void registerModCreativeModeTabs() {

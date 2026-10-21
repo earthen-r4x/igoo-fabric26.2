@@ -1,4 +1,5 @@
 // 26.2	-999999999-01-01T00:00:00	igoo/Igoo Worldgen
+746c98fa1ade0849ec5aaafb3e035b975bdb299b data/igoo/worldgen/biome/cursed_savanna.json
 e0077f817c908b76e8268249658dd866f93f3a18 data/igoo/worldgen/configured_feature/aluminum_ore.json
 d44dc1e8b2845e50f327bdc587ce5e23883a6e06 data/igoo/worldgen/configured_feature/chromium_ore.json
 fc3aab994b921588f0ca1c87bad79598028cdbf3 data/igoo/worldgen/configured_feature/tin_ore.json

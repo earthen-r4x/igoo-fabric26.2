@@ -5,6 +5,8 @@ dd43a82a809218ab029009f4156b8bed25b7a0e6 assets/igoo/blockstates/bronze_block.js
 c106c33a1f6fbb2c758de308057af25d342455ec assets/igoo/blockstates/carbon_steel_block.json
 702438cf8c171d3f1a71e89bf476381ba2cfc6d3 assets/igoo/blockstates/chromium_block.json
 afc9ba80a43fc872c0f27ca0bf3e264d3dbd80f0 assets/igoo/blockstates/chromium_ore.json
+3c195a490f5a7e1ce372bbb5c57a8e34807897a9 assets/igoo/blockstates/cursed_dirt.json
+fec9ad303b21efb44d5aacc6841732b6e362e783 assets/igoo/blockstates/cursed_grass_block.json
 451e63362338f58457a3d47cf49c80f9e9cf6a99 assets/igoo/blockstates/stainless_steel_block.json
 b9383401bfeaf3d008ef535bd627e695274c79f4 assets/igoo/blockstates/tin_block.json
 99bc5ee419b1352b93aac17eb0f796dc7ca80bbb assets/igoo/blockstates/tin_ore.json
@@ -39,6 +41,9 @@ c31fc264112d483282304e69da0b13a913edda63 assets/igoo/items/chromium_axe.json
 26d65f3c184c285a09d37e927cf3d19c45739640 assets/igoo/items/chromium_pickaxe.json
 057d895d557923e1ff94bb5ad9ffc3bdb17645c9 assets/igoo/items/chromium_shovel.json
 bd4bd4951ec402cf5ce87bee073dd23d4a2f0823 assets/igoo/items/chromium_sword.json
+15edf00db855eff79913738c6079915ead4e691f assets/igoo/items/cursed_dirt.json
+7fbcee0e1ef14ea2cb81c4d4a0f62f6712eed132 assets/igoo/items/cursed_grass_block.json
+ddbe0cd3d92746484ca019a8723a92d9090a5d05 assets/igoo/items/herobrine_spawn_egg.json
 d7e0b8737d684fc273b98c7f6b871d255db40925 assets/igoo/items/pork.json
 299095848ea0c6a00f6f203649cd8064496e6aff assets/igoo/items/pork_cooked.json
 ab1d37f64b7c964e89259ff8205927b3cb9d071d assets/igoo/items/raw_aluminum.json
@@ -82,6 +87,9 @@ b8a408b00b14ebe5af43a506df71baed3e0488c3 assets/igoo/models/block/bronze_block.j
 75b20f6c9e2bc91a256ccbbaf0905e2a70a1d3c3 assets/igoo/models/block/carbon_steel_block.json
 c0158353c0e9ae35d33b47d0b114873356e2bfc0 assets/igoo/models/block/chromium_block.json
 a30936df862fbfcb0fcd04c9d1fa961fea5e2c7f assets/igoo/models/block/chromium_ore.json
+a32494768e99707824daf8570ba022810134e190 assets/igoo/models/block/cursed_dirt.json
+68cf45d5854986df39252e95f3a139e72d8bc337 assets/igoo/models/block/cursed_grass_block.json
+fe2adba8f0db576ca7893fa3541430cd0935b915 assets/igoo/models/block/cursed_grass_block_snow.json
 ff3f70f6a198d3b83ecbc4a947b2429f4e15e8cd assets/igoo/models/block/stainless_steel_block.json
 e4042396ac9835c193e22dfa699b9f457a957e90 assets/igoo/models/block/tin_block.json
 f8cb9f935da94dc4eb523ba539388b4f33365134 assets/igoo/models/block/tin_ore.json
@@ -110,6 +118,7 @@ e77a4f392252da3f4e868fda82412868433f4383 assets/igoo/models/item/chromium_axe.js
 d166a47a5d9c48c1270b9a7d210c0667c4da5981 assets/igoo/models/item/chromium_pickaxe.json
 e4ead2adf6d09a6ac0efa7b57bf28e2c8b34dd22 assets/igoo/models/item/chromium_shovel.json
 3d621119a4fc132c97d022c37082de9cd03ec340 assets/igoo/models/item/chromium_sword.json
+e4addf48c6f6bf2fcf32dd5a7e181c8d2704dc2f assets/igoo/models/item/herobrine_spawn_egg.json
 24ae403e82e3ae1b5d048102d04187fbfda50d1e assets/igoo/models/item/pork.json
 cdc407edfb365912ca056ceb1cbe58d4a0165b3f assets/igoo/models/item/pork_cooked.json
 733751b0ed383c605581c46af4b8bfea636cc66d assets/igoo/models/item/raw_aluminum.json

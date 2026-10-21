@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.igoo.Igoo;
+import com.igoo.entity.ModEntities;
 import java.util.stream.Stream;
 
 import net.minecraft.core.Registry;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
@@ -40,6 +42,7 @@ public class ModItems {
     public static final Item Raw_titanium = registerItem("raw_titanium", Item:: new);
     public static final Item Raw_tungsten = registerItem("raw_tungsten", Item:: new);
     
+    // List
     public static final List<Item> ALL_INGOTS = List.of(
         Aluminum_ingot,
         Bronze_ingot,
@@ -153,6 +156,11 @@ public class ModItems {
         return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name),
         function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name)))));
     }
+    
+// ===================================================== Entities =======================================
+    public static final Item Herobrine_spawn_egg = registerItem("herobrine_spawn_egg",
+        p -> new SpawnEggItem(p.spawnEgg(ModEntities.HEROBRINE)));
+    
     
     
     public static void registerModItems() {
