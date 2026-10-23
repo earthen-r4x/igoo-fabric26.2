@@ -24,10 +24,6 @@ public class ModBlockTagsProvider extends FabricTagsProvider.BlockTagsProvider {
         var ironTool = builder(BlockTags.NEEDS_IRON_TOOL);
         var diamondTool = builder(BlockTags.NEEDS_DIAMOND_TOOL);
 
-        var dirt = builder(BlockTags.DIRT);
-        var shovel = builder(BlockTags.MINEABLE_WITH_SHOVEL);
-
-
         ModBlocks.ALL_BLOCKS.forEach(block -> {
             var key = BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow();
 
@@ -42,12 +38,6 @@ public class ModBlockTagsProvider extends FabricTagsProvider.BlockTagsProvider {
             } else if (ModBlocks.MINE_WITH_DIAMOND.contains(block)) {
                 diamondTool.add(key);
             }
-        });
-
-        ModBlocks.ALL_DIRT_BLOCKS.forEach(block -> {
-           var key = BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow();
-           dirt.add(key);
-           shovel.add(key);
         });
     }
 }

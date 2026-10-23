@@ -22,7 +22,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
-import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -100,12 +99,6 @@ public class ModBlocks {
         .requiresCorrectToolForDrops().sound(SoundType.STONE))
     );
     
-//    Environemt
-    public static final Block Cursed_grass_block = registerBlock("cursed_grass_block",
-        properties -> new GrassBlock(properties.strength(0.6f).sound(SoundType.SHROOMLIGHT)));
-    public static final Block Cursed_dirt = registerBlock("cursed_dirt",
-        properties -> new Block(properties.strength(0.6f).sound(SoundType.SOUL_SOIL)));
-    
     public static final List<Block> ALL_METALS = List.of(
         Aluminum_block,
         Bronze_block,
@@ -161,19 +154,6 @@ public class ModBlocks {
         Chromium_ore, new OreDrop(ModItems.Raw_chromium, 1, 2),
         Titanium_ore, new OreDrop(ModItems.Raw_titanium, 1, 2),
         Tungsten_ore, new OreDrop(ModItems.Raw_tungsten, 1, 1)
-    );
-    
-    public static final List<Block> ALL_ENVIROMENT_BLOCKS = List.of(
-        Cursed_dirt,
-        Cursed_grass_block
-    );
-    
-    public static final List<Block> ALL_GRASS_BLOCKS = List.of(
-        Cursed_grass_block
-    );
-    
-    public static final List<Block> ALL_DIRT_BLOCKS = List.of(
-        Cursed_dirt
     );
     
     public static final List<Block> ALL_BLOCKS = Stream.concat(ALL_METALS.stream(), ALL_ORES.stream()).toList();

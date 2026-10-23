@@ -36,7 +36,6 @@ public class ModCreativeModeTabs {
     .title(Component.translatable("creativemodetab.igoo.blocks"))
     .displayItems((parameters, output) -> {
         ModBlocks.ALL_BLOCKS.forEach(output::accept);
-        ModBlocks.ALL_ENVIROMENT_BLOCKS.forEach(output::accept);
         })
     .build());
     

@@ -29,22 +29,6 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
     @Override
     public void generate() {
         ModBlocks.ALL_METALS.forEach(this::dropSelf);
-        ModBlocks.ALL_DIRT_BLOCKS.forEach(this::dropSelf);
-        
-        // Quặng: rơi raw tương ứng
-        ModBlocks.ORE_DROPS.forEach((ore, drop) ->
-            add(ore, block -> createMultipleOreDrops(block, drop.raw(), drop.min(), drop.max())));
-        
-        // Khối cỏ: Rơi ra đất
-        add(ModBlocks.Cursed_grass_block, 
-            createSilkTouchDispatchTable(
-                ModBlocks.Cursed_grass_block, 
-                this.applyExplosionDecay(
-                    ModBlocks.Cursed_grass_block, 
-                    LootItem.lootTableItem(ModBlocks.Cursed_dirt)
-                )
-            )
-        );
     }
 
     public LootTable.Builder createMultipleOreDrops(Block block, Item item, float minDrops, float maxDrops) {

@@ -11,7 +11,7 @@
 		"homepage": "https://discord.gg/mrXBHH2np5",
 		"sources": "https://github.com/earthen-r4x/minecraft-hardcore-fabric26.2"
 	},
-	"license": "CC0-1.0",
+	"license": "GPL-v3",
 	"icon": "assets/igoo/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -23,7 +23,10 @@
 		],
 		"fabric-datagen": [
 			"com.igoo.client.IgooDataGenerator"
-		]
+		],
+                "terrablender": [
+                        "com.igoo.worldgen.ModTerraBlenderAPI"
+                ]
 	},
 	"mixins": [
 		"igoo.mixins.json",

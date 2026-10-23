@@ -31,6 +31,8 @@
     "block.igoo.tin_ore": "Quặng thiếc",
     "block.igoo.titanium_ore": "Quặng titan",
     "block.igoo.tungsten_ore": "Quặng vonfram",
+    "block.igoo.cursed_grass_block": "Khối cỏ bị nguyền rủa",
+    "block.igoo.cursed_dirt": "Đất bị nguyền rủa",
     "creativemodetab.igoo.blocks": "Khối",
     
     "item.igoo.aluminum_sword": "Kiếm nhôm",
@@ -79,5 +81,7 @@
     "message.igoo.herobrine.skill.undead": "§4§lThức tỉnh đi, những kẻ phục tùng ta!",
     "message.igoo.herobrine.skill.fear": "§4§lHãy run sợ trước sức mạnh của ta!",
     "entity.igoo.cursed_herobrine": "Herobrine Bị Nguyền Rủa",
-    "message.igoo.herobrine.cursed_summoned": "§4§lNgươi đã triệu hồi ta tại mảnh đất bị nguyền rủa... Ngươi sẽ chết thảm hơn gấp mười lần!"
+    "message.igoo.herobrine.cursed_summoned": "§4§lNgươi đã triệu hồi ta tại mảnh đất bị nguyền rủa...",
+    "message.igoo.boss.defeated": "%s đã đánh bại %s!",
+    "message.igoo.boss.defeated_unknown": "%s đã bị đánh bại!"
 }

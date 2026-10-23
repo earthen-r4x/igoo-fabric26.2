@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "igoo:trash_home",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 123456789,
+    "spacing": 16,
+    "separation": 5
+  }
+}

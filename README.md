@@ -139,6 +139,19 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 
 ---
 
+## ⚠️ Yêu cầu tải thêm mod
+
+Để mod Igoo hoạt động đầy đủ (đặc biệt là các tính năng liên quan đến **Biome** và **World Generation**), bạn **bắt buộc** phải cài đặt thêm mod sau:
+
+| Mod | Phiên bản | Liên kết tải |
+| --- | --- | --- |
+| **TerraBlender** | `26.2.0.0.2` (Fabric) | [Tải xuống từ Modrinth](https://modrinth.com/mod/terrablender/version/KQix25Qc) |
+
+> [!NOTE]
+> **Hướng dẫn cài đặt:** Tải file `.jar` của TerraBlender và bỏ vào thư mục `mods/` cùng với file `.jar` của Igoo Mod. TerraBlender là thư viện bắt buộc để mod có thể thêm các biome mới vào thế giới mà không gây xung đột.
+
+---
+
 ## 🚀 Cài đặt & Build
 
 ### 1️⃣ Clone dự án

@@ -31,6 +31,8 @@
     "block.igoo.tin_ore": "Tin ore",
     "block.igoo.titanium_ore": "Titanium ore",
     "block.igoo.tungsten_ore": "Tungsten ore",
+    "block.igoo.cursed_grass_block": "Cursed grass block",
+    "block.igoo.cursed_dirt": "Cursed dirt",
     "creativemodetab.igoo.blocks": "Blocks",
     
     "item.igoo.aluminum_sword": "Aluminum sword",
@@ -81,5 +83,7 @@
     "message.igoo.herobrine.skill.undead": "§4§lArise, my loyal servants!",
     "message.igoo.herobrine.skill.fear": "§4§lTremble before my power!",
     "entity.igoo.cursed_herobrine": "Cursed Herobrine",
-    "message.igoo.herobrine.cursed_summoned": "§4§lYou have summoned me on cursed soil... Your death will be tenfold!"
+    "message.igoo.herobrine.cursed_summoned": "§4§lYou have summoned me on cursed soil...",
+    "message.igoo.boss.defeated": "%s has defeated %s!",
+    "message.igoo.boss.defeated_unknown": "%s has been defeated!"
 }

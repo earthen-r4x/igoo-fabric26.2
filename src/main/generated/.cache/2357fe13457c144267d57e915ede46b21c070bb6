@@ -1,0 +1,5 @@
+// 26.2	-999999999-01-01T00:00:00	igoo/Tags for minecraft:worldgen/biome
+88d00c7c30ddd67384ccdfb3b140bde80f5b30ca data/igoo/tags/worldgen/biome/has_structure/herobrine_altar.json
+88d00c7c30ddd67384ccdfb3b140bde80f5b30ca data/igoo/tags/worldgen/biome/has_structure/trash_home.json
+88d00c7c30ddd67384ccdfb3b140bde80f5b30ca data/minecraft/tags/worldgen/biome/is_overworld.json
+88d00c7c30ddd67384ccdfb3b140bde80f5b30ca data/minecraft/tags/worldgen/biome/is_savanna.json

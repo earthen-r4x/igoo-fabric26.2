@@ -1,7 +1,5 @@
 // 26.2	-999999999-01-01T00:00:00	igoo/Tags for minecraft:block
-47d79fd184029e880a85b8ced33ca7bfd25f7980 data/minecraft/tags/block/dirt.json
 bd790876b95d3a53ccdb953e93f58c1e182de1af data/minecraft/tags/block/mineable/pickaxe.json
-47d79fd184029e880a85b8ced33ca7bfd25f7980 data/minecraft/tags/block/mineable/shovel.json
 50f4f6e6c8f34a06e4c6dddc0babd3cbf23e45ba data/minecraft/tags/block/needs_diamond_tool.json
 0ef9c40966b7f020e3b27071d60da26dfd368d9c data/minecraft/tags/block/needs_iron_tool.json
 0d921444a5c4755c5aa37d4042e2bff01072f088 data/minecraft/tags/block/needs_stone_tool.json

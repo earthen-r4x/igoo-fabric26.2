@@ -66,7 +66,6 @@ public class AltarSummonEvent {
                         CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> {
                             serverLevel.getServer().execute(() -> {
                                 
-                                // 👇 MỞ KHÓA BÀN THỜ SAU KHI XONG VIỆC
                                 ACTIVE_ALTARS.remove(pos);
 
                                 destroyAltar(level, pos);
@@ -103,7 +102,7 @@ public class AltarSummonEvent {
         });
     }
 
-    // Hàm phá hủy bàn thờ (Giữ nguyên)
+    // Hàm phá hủy bàn thờ
     private static void destroyAltar(Level level, BlockPos center) {
         level.removeBlock(center.above(), false);
         level.removeBlock(center, false);

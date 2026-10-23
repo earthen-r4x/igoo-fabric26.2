@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 
 public class HerobrineBoss extends PathfinderMob {
@@ -31,7 +32,7 @@ public class HerobrineBoss extends PathfinderMob {
     private final ServerBossEvent bossBar = new ServerBossEvent(
             UUID.randomUUID(),
             this.getDisplayName(),
-            BossEvent.BossBarColor.WHITE,
+            BossEvent.BossBarColor.RED,
             BossEvent.BossBarOverlay.PROGRESS
     );
 
@@ -44,11 +45,11 @@ public class HerobrineBoss extends PathfinderMob {
 
     public static AttributeSupplier.Builder createHerobrineAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 200.0D)
+                .add(Attributes.MAX_HEALTH, 400.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
-                .add(Attributes.ATTACK_DAMAGE, 10.0D)
-                .add(Attributes.FOLLOW_RANGE, 40.0D)
-                .add(Attributes.ARMOR, 10.0D);
+                .add(Attributes.ATTACK_DAMAGE, 30.0D)
+                .add(Attributes.FOLLOW_RANGE, 200.0D)
+                .add(Attributes.ARMOR, 20.0D);
     }
 
     @Override
@@ -78,8 +79,24 @@ public class HerobrineBoss extends PathfinderMob {
     @Override
     public void aiStep() {
         super.aiStep();
-        this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
+        
+        // 1. Cập nhật thanh tiến trình (độ dài của thanh máu)
+        float healthRatio = this.getHealth() / this.getMaxHealth();
+        this.bossBar.setProgress(healthRatio);
 
+        // 2. Tự động đổi màu thanh máu dựa trên % máu
+        if (healthRatio > 0.66F) {
+            // Trên 66% máu: Màu Xanh Lá (Khỏe mạnh)
+            this.bossBar.setColor(BossEvent.BossBarColor.GREEN);
+        } else if (healthRatio > 0.33F) {
+            // Từ 33% đến 66% máu: Màu Vàng (Bị thương)
+            this.bossBar.setColor(BossEvent.BossBarColor.YELLOW);
+        } else {
+            // Dưới 33% máu: Màu Đỏ (Nguy kịch)
+            this.bossBar.setColor(BossEvent.BossBarColor.RED);
+        }
+
+        // 3. Logic kỹ năng
         if (!this.level().isClientSide() && this.isAlive()) {
             LivingEntity target = this.getTarget();
             
@@ -219,6 +236,34 @@ public class HerobrineBoss extends PathfinderMob {
             
             // Hiệu ứng sóng âm thanh
             serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, this.getX(), this.getY() + 1, this.getZ(), 1, 0, 0, 0, 0);
+        }
+    }
+    
+    @Override
+    public void die(DamageSource source) {
+        super.die(source);
+
+        if (!this.level().isClientSide()) {
+            // Kiểm tra xem ai là người kết liễu boss
+            if (source.getEntity() instanceof ServerPlayer player) {
+                // Gửi thông báo toàn server với tên người chơi và tên boss
+                this.level().getServer().getPlayerList().broadcastSystemMessage(
+                        Component.translatable("message.igoo.boss.defeated", 
+                                player.getDisplayName(), 
+                                this.getDisplayName()),
+                        false // false = không ghi vào log chat, chỉ hiện trên màn hình
+                );
+            } else {
+                // Trường hợp boss chết do sát thương môi trường (rơi, cháy,...)
+                this.level().getServer().getPlayerList().broadcastSystemMessage(
+                        Component.translatable("message.igoo.boss.defeated_unknown", 
+                                this.getDisplayName()),
+                        false
+                );
+            }
+            
+            // (Tùy chọn) Phát âm thanh chiến thắng
+            this.level().playSound(null, this.blockPosition(), net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, net.minecraft.sounds.SoundSource.MASTER, 1.0f, 1.0f);
         }
     }
 }

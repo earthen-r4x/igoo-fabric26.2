@@ -1,4 +1,9 @@
 {
+  "attributes": {
+    "minecraft:visual/fog_color": "#8b0000",
+    "minecraft:visual/sky_color": "#8b0000",
+    "minecraft:visual/water_fog_color": "#8b0000"
+  },
   "carvers": [],
   "downfall": 0.0,
   "effects": {
@@ -12,9 +17,35 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "minecraft:horse",
+        "maxCount": 6,
+        "minCount": 2,
+        "weight": 5
+      }
+    ],
     "misc": [],
-    "monster": [],
+    "monster": [
+      {
+        "type": "minecraft:zombie",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 100
+      },
+      {
+        "type": "minecraft:skeleton",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 100
+      },
+      {
+        "type": "minecraft:witch",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      }
+    ],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []
