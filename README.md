@@ -114,15 +114,6 @@ Mod bổ sung đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻ
 | Titanium Ore | `titanium_ore` | Cấp Kim cương | Raw Titanium (1-2) |
 | Tungsten Ore | `tungsten_ore` | Cấp Kim cương | Raw Tungsten (1) |
 
-### 🚧 Tính năng dự kiến
-
-- [x] Dụng cụ (Pickaxe, Axe, Shovel, Sword, Hoe) cho mỗi loại kim loại
-- [ ] Giáp (Helmet, Chestplate, Leggings, Boots) cho mỗi loại kim loại
-- [x] Công thức chế tạo cho lò nung (Furnace) và bàn chế tạo (Crafting Table)
-- [ ] Hệ thống máy móc / năng lượng
-- [ ] Cây trồng và thực phẩm mới
-- [x] Thức ăn
-
 ---
 
 ## 💻 Yêu cầu hệ thống
@@ -431,6 +422,33 @@ Tìm các dòng có tiền tố [igoo] hoặc com.igoo để debug.
 ---
 
 ## 🗺️ Lộ trình phát triển
+
+### 🚧 Phiên bản 1.0 (Phiên bản hiện tại)
+
+**Đã hoàn thành:**
+- [x] **Hệ thống nguyên liệu:** Thêm 10 loại thỏi kim loại/hợp kim và 5 loại quặng thô (Raw).
+- [x] **Hệ thống khối:** Thêm 10 khối kim loại (Metal Blocks) và 5 khối quặng (Ores).
+- [x] **Hệ thống dụng cụ:** Đầy đủ 5 loại dụng cụ (Kiếm, Cuốc chim, Rìu, Xẻng, Cuốc) cho 5 kim loại chính với cấp độ từ Gỗ đến Netherite.
+- [x] **Hệ thống thức ăn:** Thêm Cánh gà, Thịt heo, Bánh mì Pháp và Phô mai (khối/lát). Hỗ trợ nung, hun khói, lửa trại.
+- [x] **Cơ chế Worldgen:** Sinh quặng tự nhiên trong lòng đất.
+- [x] **Biome tùy chỉnh:** Tạo biome `cursed_savanna` với bầu trời, sương mù và lớp đất/cỏ màu đỏ máu.
+- [x] **Tích hợp TerraBlender:** Đưa biome tùy chỉnh vào thế giới Overworld an toàn, không gây xung đột.
+- [x] **Cấu trúc (Structures):** Thêm cấu trúc `trash_home` và `herobrine_altar`. Hỗ trợ sinh loot table (rương) bên trong cấu trúc.
+- [x] **Hệ thống Boss (Herobrine):**
+  - [x] Tạo 2 phiên bản: Herobrine (Thường) và Cursed Herobrine (Mạnh gấp 5 lần).
+  - [x] Bảng máu (Boss Bar) tự động đổi màu (Xanh -> Vàng -> Đỏ) dựa trên % máu.
+  - [x] Trang bị 5 kỹ năng chiến đấu (Dịch chuyển, Sấm sét, Triệu hồi xác sống, Đẩy lùi, v.v.).
+  - [x] Hệ thống Loot Table phần thưởng cực khủng (Netherite, Titan, Kim cương, Ngôi sao Nether...).
+  - [x] Tin nhắn thông báo toàn server khi Boss bị hạ gục.
+- [x] **Cơ chế triệu hồi Boss:** Yêu cầu xây bàn thờ (3x3 Vàng, Netherrack, Đuốc đỏ). Kích hoạt bằng Bật lửa, Quả cầu lửa, hoặc bị quái (Ghast/Blaze) bắn trúng.
+- [x] **Hệ thống Datagen:** Tự động hóa sinh model, blockstate, tag, loot table, recipe và worldgen.
+
+**Đang phát triển / Dự kiến hoàn thiện cho bản 1.0:**
+- [ ] **Hệ thống Giáp (Armor):** Thêm Mũ, Áo, Quần, Giày cho các loại kim loại mới.
+- [ ] **Công cụ đặc biệt:** Thêm Búa (Hammer) hoặc Cưa (Saw) phục vụ chế tạo.
+- [ ] **Mở rộng Biome:** Thêm các loại cây, cỏ, hoa đặc trưng riêng cho biome `cursed_savanna`.
+- [ ] **Nâng cấp Boss:** Thêm hiệu ứng âm thanh (Music Disc) riêng khi đánh Boss và các kỹ năng mới.
+- [ ] **Cân bằng Game:** Tinh chỉnh lại tỷ lệ rơi quặng và sát thương của Boss cho phù hợp.
 
 ---
 
