@@ -12,7 +12,6 @@ public class ModLootTables {
             Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "chests/trash_home")
     );
 
-    // 👇 Thêm key cho rương Herobrine Altar
     public static final ResourceKey<LootTable> HEROBRINE_ALTAR_CHEST = ResourceKey.create(
             Registries.LOOT_TABLE,
             Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "chests/herobrine_altar")

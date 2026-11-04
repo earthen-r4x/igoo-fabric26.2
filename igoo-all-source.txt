@@ -1,0 +1,3802 @@
+
+
+// ============================================================
+// FILE: src\client\java\com\igoo\client\IgooClient.java
+// ============================================================
+package com.igoo.client;
+
+import com.igoo.client.renderer.BabyBatRenderer;
+import com.igoo.client.renderer.HerobrineRenderer;
+import com.igoo.client.renderer.CursedHerobrineRenderer;
+
+import com.igoo.entity.ModEntities;
+import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+
+public class IgooClient implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
+        EntityRenderers.register(ModEntities.HEROBRINE, HerobrineRenderer::new);
+        EntityRenderers.register(ModEntities.CURSED_HEROBRINE, CursedHerobrineRenderer::new);
+        EntityRenderers.register(ModEntities.BABY_BAT, BabyBatRenderer::new);
+    }
+}
+
+// ============================================================
+// FILE: src\client\java\com\igoo\client\IgooDataGenerator.java
+// ============================================================
+package com.igoo.client;
+
+import com.igoo.client.datagen.*;
+import com.igoo.worldgen.ModWorldConfiguredFeatures;
+import com.igoo.worldgen.ModWorldPlacedFeatures;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+
+public class IgooDataGenerator implements DataGeneratorEntrypoint {
+
+    @Override
+    public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+        FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+        
+        pack.addProvider(ModRecipeProvider::new);
+        pack.addProvider(ModBlockTagsProvider::new);
+        pack.addProvider(ModBlockLootTableProvider::new);
+        pack.addProvider(ModModelProvider::new);
+        pack.addProvider(ModItemTagsProvider::new);
+        pack.addProvider(ModWorldgenProvider::new);
+        pack.addProvider(ModBiomeTagsProvider::new); 
+        
+        pack.addProvider(ModChestLootTableProvider::new);
+        pack.addProvider(ModEntityLootTableProvider::new);
+    }
+    
+    @Override
+    public void buildRegistry(RegistrySetBuilder registryBuilder) {
+        // Chỉ đăng ký feature của Mod, bỏ hoàn toàn Vanilla
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, ModWorldConfiguredFeatures::configure);
+        registryBuilder.add(Registries.PLACED_FEATURE, ModWorldPlacedFeatures::configure);
+        registryBuilder.add(Registries.BIOME, ModWorldgenProvider::bootstrapBiomes);
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModBiomeTagsProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import com.igoo.worldgen.ModBiomes;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
+
+import java.util.concurrent.CompletableFuture;
+
+public class ModBiomeTagsProvider extends FabricTagsProvider<Biome> {
+    
+    public static final TagKey<Biome> HAS_HEROBRINE_ALTAR = TagKey.create(
+            Registries.BIOME,
+            Identifier.fromNamespaceAndPath("igoo", "has_structure/herobrine_altar")
+    );
+    public static final TagKey<Biome> HAS_TRASH_HOME = TagKey.create(
+            Registries.BIOME,
+            Identifier.fromNamespaceAndPath("igoo", "has_structure/trash_home")
+    );
+    
+    public ModBiomeTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, Registries.BIOME, registriesFuture);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider registries) {
+        builder(BiomeTags.IS_OVERWORLD).add(ModBiomes.CURSED_SAVANNA);
+        builder(BiomeTags.IS_SAVANNA).add(ModBiomes.CURSED_SAVANNA);
+        builder(HAS_HEROBRINE_ALTAR).add(ModBiomes.CURSED_SAVANNA);
+        builder(HAS_TRASH_HOME).add(ModBiomes.CURSED_SAVANNA);
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModBlockLootTableProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import java.util.concurrent.CompletableFuture;
+
+import com.igoo.block.ModBlocks;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+
+public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
+
+    public ModBlockLootTableProvider(
+            FabricPackOutput packOutput,
+            CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(packOutput, registriesFuture);
+    }
+
+    
+    
+    @Override
+    public void generate() {
+        ModBlocks.ALL_METALS.forEach(this::dropSelf);
+        ModBlocks.ALL_ORES.forEach(ore -> {
+            var drop = ModBlocks.ORE_DROPS.get(ore);
+            if (drop != null) {
+                add(ore, createMultipleOreDrops(ore, drop.raw(), drop.min(), drop.max()));
+            }
+        });
+    }
+
+    public LootTable.Builder createMultipleOreDrops(Block block, Item item, float minDrops, float maxDrops) {
+        var enchantments = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+
+        return this.createSilkTouchDispatchTable(
+                block,
+                this.applyExplosionDecay(
+                        block,
+                        LootItem.lootTableItem(item)
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(minDrops, maxDrops)))
+                                .apply(ApplyBonusCount.addOreBonusCount(
+                                        enchantments.getOrThrow(Enchantments.FORTUNE))
+                                )
+                )
+        );
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModBlockTagsProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import java.util.concurrent.CompletableFuture;
+
+import com.igoo.block.ModBlocks;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.core.registries.BuiltInRegistries;
+
+public class ModBlockTagsProvider extends FabricTagsProvider.BlockTagsProvider {
+
+    public ModBlockTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+        super(output, registryLookupFuture);
+    }
+
+    
+    @Override
+    protected void addTags(HolderLookup.Provider registries) {
+        var pickaxe = builder(BlockTags.MINEABLE_WITH_PICKAXE);
+        var stoneTool = builder(BlockTags.NEEDS_STONE_TOOL);
+        var ironTool = builder(BlockTags.NEEDS_IRON_TOOL);
+        var diamondTool = builder(BlockTags.NEEDS_DIAMOND_TOOL);
+
+        ModBlocks.ALL_BLOCKS.forEach(block -> {
+            var key = BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow();
+
+            // Tất cả block đều đào bằng cuốc
+            pickaxe.add(key);
+
+            // Phân loại cấp công cụ
+            if (ModBlocks.MINE_WITH_STONE.contains(block)) {
+                stoneTool.add(key);
+            } else if (ModBlocks.MINE_WITH_IRON.contains(block)) {
+                ironTool.add(key);
+            } else if (ModBlocks.MINE_WITH_DIAMOND.contains(block)) {
+                diamondTool.add(key);
+            }
+        });
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModChestLootTableProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import com.igoo.block.ModBlocks;
+import com.igoo.item.ModItems;
+import com.igoo.worldgen.ModLootTables;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables; // 👈 Import cho End City
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.NestedLootTable; // 👈 Import cho Nested Loot
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+
+public class ModChestLootTableProvider extends SimpleFabricLootTableSubProvider {
+
+    public ModChestLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(output, registryLookup, LootContextParamSets.CHEST);
+    }
+
+    @Override
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
+        
+        // ==========================================
+        // 1. RƯƠNG TRASH HOME (Cũ)
+        // ==========================================
+        consumer.accept(ModLootTables.TRASH_HOME_CHEST, LootTable.lootTable()
+                // 10% ra 1-5 iron_ingot
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.80F))
+                        .add(LootItem.lootTableItem(Items.IRON_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 5.0F))))
+                )
+                // 20% ra 1-3 ingot mod
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Aluminum_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
+                        .add(LootItem.lootTableItem(ModItems.Tin_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
+                        .add(LootItem.lootTableItem(ModItems.Titanium_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
+                        .add(LootItem.lootTableItem(ModItems.Tungsten_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F))))
+                )
+                // 100% ra 1-5 bánh mì pháp
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Baguette)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 5.0F))))
+                )
+                // 1% ra 1 titanium_alloy_block
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.01F))
+                        .add(LootItem.lootTableItem(ModBlocks.Titanium_alloy_block))
+                )
+        );
+
+
+        // ==========================================
+        // 2. RƯƠNG HEROBRINE ALTAR (Mới)
+        // ==========================================
+        consumer.accept(ModLootTables.HEROBRINE_ALTAR_CHEST, LootTable.lootTable()
+                // 100% ra 1 khối vàng
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.GOLD_BLOCK))
+                )
+                // 50% ra 8-20 xương
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.50F))
+                        .add(LootItem.lootTableItem(Items.BONE)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 20.0F))))
+                )
+                // 50% ra loot của End City
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.5F))
+                        .add(NestedLootTable.lootTableReference(BuiltInLootTables.END_CITY_TREASURE))
+                )
+        );
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModEntityLootTableProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import com.igoo.entity.ModEntities;
+import com.igoo.item.ModItems;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+
+import java.util.concurrent.CompletableFuture;
+
+public class ModEntityLootTableProvider extends FabricEntityLootSubProvider {
+
+    public ModEntityLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
+    }
+
+    @Override
+    public void generate() {
+        // ==========================================
+        // 1. LOOT CỦA HEROBRINE (Bình thường)
+        // ==========================================
+        this.add(ModEntities.HEROBRINE, LootTable.lootTable()
+                // 3–6 Thỏi Netherite
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.NETHERITE_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(3.0F, 6.0F)))))
+                
+                // 4–8 Thỏi Titan
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Titanium_ingot)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(4.0F, 8.0F)))))
+                
+                // 2–5 Thỏi Hợp Kim Titan
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Titanium_alloy)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))))
+                
+                // 2–4 Thỏi Cacbua Vonfram
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Tungsten_carbide_ingot)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F)))))
+                
+                // 8–16 Kim Cương
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.DIAMOND)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 16.0F)))))
+                
+                // 8–16 Ngọc Lục Bảo
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 16.0F)))))
+        );
+
+        // ==========================================
+        // 2. LOOT CỦA CURSED HEROBRINE (Siêu mạnh)
+        // ==========================================
+        this.add(ModEntities.CURSED_HEROBRINE, LootTable.lootTable()
+                // 16–32 Thỏi Hợp Kim Titan
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Titanium_alloy)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(16.0F, 32.0F)))))
+
+                // 8–16 Thỏi Cacbua Vonfram
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(ModItems.Tungsten_carbide_ingot)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 16.0F)))))
+
+                // 16–32 Mảnh Vụn Netherite
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(16.0F, 32.0F)))))
+
+                // 32–64 Kim Cương
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.DIAMOND)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(32.0F, 64.0F)))))
+
+                // 16–32 Ngọc Lục Bảo
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(16.0F, 32.0F)))))
+
+                // 4–8 Táo Vàng Phù Phép
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(4.0F, 8.0F)))))
+
+                // 3–5 Ngôi Sao Nether (100%)
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.NETHER_STAR)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(3.0F, 5.0F)))))
+
+                // 1–2 Totem of Undying (100%)
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(Items.TOTEM_OF_UNDYING)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))))
+
+                // 1 Đầu Rồng (50%)
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.50F))
+                        .add(LootItem.lootTableItem(Items.DRAGON_HEAD)))
+
+                // 1–3 Táo Vàng Phù Phép bổ sung (50%)
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.50F))
+                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))))
+
+                // 1–2 vật phẩm trang trí hiếm (25%) - Ở đây dùng Elytra (Cánh cụt) và Trident (Đinh ba)
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemRandomChanceCondition.randomChance(0.25F))
+                        .add(LootItem.lootTableItem(Items.ELYTRA))
+                        .add(LootItem.lootTableItem(Items.TRIDENT))
+                )
+        );
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModItemTagsProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import java.util.concurrent.CompletableFuture;
+
+import com.igoo.Igoo;
+import com.igoo.item.ModItems;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+
+public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
+
+    public ModItemTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider registries) {
+        // 1. Gắn công cụ vào tag tương ứng của Vanilla
+        builder(ItemTags.SWORDS).add(
+            key(ModItems.Aluminum_sword), key(ModItems.Tin_sword), key(ModItems.Chromium_sword), key(ModItems.Titanium_sword), key(ModItems.Tungsten_sword)
+        );
+        builder(ItemTags.PICKAXES).add(
+            key(ModItems.Aluminum_pickaxe), key(ModItems.Tin_pickaxe), key(ModItems.Chromium_pickaxe), key(ModItems.Titanium_pickaxe), key(ModItems.Tungsten_pickaxe)
+        );
+        builder(ItemTags.AXES).add(
+            key(ModItems.Aluminum_axe), key(ModItems.Tin_axe), key(ModItems.Chromium_axe), key(ModItems.Titanium_axe), key(ModItems.Tungsten_axe)
+        );
+        builder(ItemTags.SHOVELS).add(
+            key(ModItems.Aluminum_shovel), key(ModItems.Tin_shovel), key(ModItems.Chromium_shovel), key(ModItems.Titanium_shovel), key(ModItems.Tungsten_shovel)
+        );
+        builder(ItemTags.HOES).add(
+            key(ModItems.Aluminum_hoe), key(ModItems.Tin_hoe), key(ModItems.Chromium_hoe), key(ModItems.Titanium_hoe), key(ModItems.Tungsten_hoe)
+        );
+
+        // 2. Đăng ký tag sửa chữa (Repair) cho từng kim loại
+        addRepairTag("aluminum_ingot", ModItems.Aluminum_ingot);
+        addRepairTag("tin_ingot", ModItems.Tin_ingot);
+        addRepairTag("chromium_ingot", ModItems.Chromium_ingot);
+        addRepairTag("titanium_ingot", ModItems.Titanium_ingot);
+        addRepairTag("tungsten_ingot", ModItems.Tungsten_ingot);
+    }
+
+    private void addRepairTag(String tagName, Item item) {
+        TagKey<Item> tag = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, tagName));
+        builder(tag).add(key(item));
+    }
+
+    /** Helper: Chuyển đổi Item thành ResourceKey<Item> cho API 26.2 */
+    private static ResourceKey<Item> key(Item item) {
+        return BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow();
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModModelProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import com.igoo.block.ModBlocks;
+import com.igoo.item.ModItems;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplates;
+
+public class ModModelProvider extends FabricModelProvider {
+    public ModModelProvider(FabricPackOutput output) {
+        super(output);
+    }
+
+    @Override
+    public void generateBlockStateModels(BlockModelGenerators blockModelGenerator) {
+        ModBlocks.ALL_BLOCKS.forEach(block -> blockModelGenerator.createTrivialCube(block));
+    }
+
+    @Override
+    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+        ModItems.ALL_ITEMS.forEach(item -> itemModelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM));
+        ModItems.ALL_FOODS.forEach(food -> itemModelGenerator.generateFlatItem(food, ModelTemplates.FLAT_HANDHELD_ITEM));
+        ModItems.ALL_TOOLS.forEach(tool -> itemModelGenerator.generateFlatItem(tool, ModelTemplates.FLAT_HANDHELD_ITEM));
+        itemModelGenerator.generateFlatItem(ModItems.Herobrine_spawn_egg, ModelTemplates.FLAT_ITEM);
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModRecipeProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import com.igoo.Igoo;
+import com.igoo.block.ModBlocks;
+import com.igoo.item.ModItems;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+// import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+
+public class ModRecipeProvider extends FabricRecipeProvider {
+
+    public ModRecipeProvider(FabricPackOutput output,
+                             CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
+    }
+
+    @Override
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        return new RecipeProvider(registries, output) {
+            
+            // 👇 KHAI BÁO HÀM COOKFOOD Ở ĐÂY (Ngoài buildRecipes)
+            private void cookFood(List<ItemLike> inputs, ItemLike result, String groupName) {
+                // 1. Smelting
+                oreCooking(SmeltingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 200, groupName, "_from_smelting");
+                // 2. Smoking
+                oreCooking(SmokingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 100, groupName, "_from_smoking");
+                // 3. Campfire
+                oreCooking(CampfireCookingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 600, groupName, "_from_campfire_cooking");
+            }
+
+            @Override
+            public void buildRecipes() {
+                // ===== Nấu chảy: raw + ore -> ingot =====
+                for (Block ore : ModBlocks.ALL_ORES) {
+                    String base = stripSuffix(path(ore), "_ore");
+                    Item raw   = findItem("raw_" + base);
+                    Item ingot = findItem(base + "_ingot");
+                    if (raw == null || ingot == null) continue;
+
+                    List<ItemLike> smeltables = List.of(raw, ore);
+
+                    oreSmelting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 200, base);
+                    oreBlasting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 100, base);
+                }
+
+                // ===== Nén: 9 ingot <-> 1 block =====
+                for (Block block : ModBlocks.ALL_METALS) {
+                    String base = stripSuffix(path(block), "_block");
+                    Item ingot = findItem(base + "_ingot");
+                    if (ingot == null) ingot = findItem(base);
+                    if (ingot == null) continue;
+
+                    nineBlockStorageRecipes(RecipeCategory.MISC, ingot, RecipeCategory.MISC, block);
+                }
+                
+                // ===== Dụng cụ =====
+                record ToolSet(Item ingot, Item sword, Item pickaxe, Item axe, Item shovel, Item hoe) {}
+
+                List<ToolSet> toolSets = List.of(
+                    new ToolSet(ModItems.Aluminum_ingot, ModItems.Aluminum_sword, ModItems.Aluminum_pickaxe, ModItems.Aluminum_axe, ModItems.Aluminum_shovel, ModItems.Aluminum_hoe),
+                    new ToolSet(ModItems.Tin_ingot, ModItems.Tin_sword, ModItems.Tin_pickaxe, ModItems.Tin_axe, ModItems.Tin_shovel, ModItems.Tin_hoe),
+                    new ToolSet(ModItems.Chromium_ingot, ModItems.Chromium_sword, ModItems.Chromium_pickaxe, ModItems.Chromium_axe, ModItems.Chromium_shovel, ModItems.Chromium_hoe),
+                    new ToolSet(ModItems.Titanium_ingot, ModItems.Titanium_sword, ModItems.Titanium_pickaxe, ModItems.Titanium_axe, ModItems.Titanium_shovel, ModItems.Titanium_hoe),
+                    new ToolSet(ModItems.Tungsten_ingot, ModItems.Tungsten_sword, ModItems.Tungsten_pickaxe, ModItems.Tungsten_axe, ModItems.Tungsten_shovel, ModItems.Tungsten_hoe)
+                );
+
+                for (ToolSet set : toolSets) {
+                    String axeName = BuiltInRegistries.ITEM.getKey(set.axe()).getPath();
+                    String hoeName = BuiltInRegistries.ITEM.getKey(set.hoe()).getPath();
+
+                    // Sword
+                    shaped(RecipeCategory.COMBAT, set.sword())
+                        .pattern("X").pattern("X").pattern("|")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
+
+                    // Pickaxe
+                    shaped(RecipeCategory.TOOLS, set.pickaxe())
+                        .pattern("XXX").pattern(" | ").pattern(" | ")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
+
+                    // Axe (2 kiểu)
+                    shaped(RecipeCategory.TOOLS, set.axe())
+                        .pattern("XX").pattern("X|").pattern(" |")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, axeName);
+
+                    shaped(RecipeCategory.TOOLS, set.axe())
+                        .pattern("XX").pattern("|X").pattern("| ")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, axeName + "_mirrored");
+
+                    // Shovel
+                    shaped(RecipeCategory.TOOLS, set.shovel())
+                        .pattern("X").pattern("|").pattern("|")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
+
+                    // Hoe (2 kiểu)
+                    shaped(RecipeCategory.TOOLS, set.hoe())
+                        .pattern("XX").pattern(" |").pattern(" |")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, hoeName);
+
+                    shaped(RecipeCategory.TOOLS, set.hoe())
+                        .pattern("XX").pattern("| ").pattern("| ")
+                        .define('X', set.ingot()).define('|', Items.STICK)
+                        .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, hoeName + "_mirrored");
+                }
+
+                // ===== THỨC ĂN =====
+                List<ItemLike> chickenSmeltables = List.of(ModItems.Chicken_wing);
+                List<ItemLike> porkSmeltables = List.of(ModItems.Pork);
+                List<ItemLike> baguetteSmeltables = List.of(Items.HAY_BLOCK);
+
+                cookFood(chickenSmeltables, ModItems.Chicken_wing_cooked, "chicken_wing");
+                cookFood(porkSmeltables, ModItems.Pork_cooked, "pork");
+                cookFood(baguetteSmeltables, ModItems.Baguette, "baguette");
+
+                // ===== PHÔ MAI =====
+                shapeless(RecipeCategory.FOOD, ModItems.Cheese_full)
+                    .requires(Items.MILK_BUCKET)
+                    .requires(Items.WHEAT, 3)
+                    .unlockedBy("has_milk", has(Items.MILK_BUCKET))
+                    .save(output);
+
+                shaped(RecipeCategory.FOOD, ModItems.Cheese_full)
+                    .pattern("CCC").pattern("CCC").pattern("CCC")
+                    .define('C', ModItems.Cheese_slice)
+                    .unlockedBy(getHasName(ModItems.Cheese_slice), has(ModItems.Cheese_slice))
+                    .save(output, "cheese_full_from_slices");
+
+                shapeless(RecipeCategory.FOOD, ModItems.Cheese_slice, 9)
+                    .requires(ModItems.Cheese_full)
+                    .unlockedBy(getHasName(ModItems.Cheese_full), has(ModItems.Cheese_full))
+                    .save(output);
+            }
+        };
+    }
+
+    @Override
+    public String getName() {
+        return "IGOO Recipes";
+    }
+
+    // --- Các hàm helper ---
+    private static String path(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).getPath();
+    }
+
+    private static String stripSuffix(String name, String suffix) {
+        return name.endsWith(suffix) ? name.substring(0, name.length() - suffix.length()) : name;
+    }
+
+    private static Item findItem(String id) {
+        return BuiltInRegistries.ITEM
+                .getOptional(Identifier.fromNamespaceAndPath(Igoo.MOD_ID, id))
+                .orElse(null);
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\datagen\ModWorldgenProvider.java
+// ============================================================
+package com.igoo.client.datagen;
+
+import com.igoo.worldgen.ModBiomes;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.*;
+
+import java.util.concurrent.CompletableFuture;
+
+public class ModWorldgenProvider extends FabricDynamicRegistryProvider {
+
+    public ModWorldgenProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
+    }
+
+    @Override
+    protected void configure(HolderLookup.Provider registries, Entries entries) {
+        entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
+        entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
+        entries.addAll(registries.lookupOrThrow(Registries.BIOME));
+    }
+
+    public static void bootstrapBiomes(BootstrapContext<Biome> context) {
+        var placedFeatureGetter = context.lookup(Registries.PLACED_FEATURE);
+        var carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
+
+        // 1. Hiệu ứng màu sắc
+        BiomeSpecialEffects.Builder effects = new BiomeSpecialEffects.Builder()
+                .waterColor(0x8B0000)
+                .grassColorOverride(0x550000)
+                .foliageColorOverride(0x550000);
+
+        // 3. Cấu hình sinh thế giới (Rỗng, vì feature đã được thêm qua BiomeModifications)
+        BiomeGenerationSettings generation = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter)
+                .build();
+
+        // 4. Cấu hình sinh vật
+        MobSpawnSettings spawns = new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MONSTER, 100, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 4, 4))
+                .addSpawn(MobCategory.MONSTER, 100, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 4, 4))
+                .addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 2))
+                .addSpawn(MobCategory.CREATURE, 5, new MobSpawnSettings.SpawnerData(EntityTypes.HORSE, 2, 6))
+                .build();
+
+        // 5. Đăng ký Biome
+        context.register(ModBiomes.CURSED_SAVANNA, new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(2.0f)
+                .downfall(0.0f)
+                .specialEffects(effects.build())
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, Integer.valueOf(0xFF8B0000))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, Integer.valueOf(0xFF8B0000))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, Integer.valueOf(0xFF8B0000))
+                .mobSpawnSettings(spawns)
+                .generationSettings(generation)
+                .build());
+    }
+
+    @Override
+    public String getName() {
+        return "Igoo Worldgen";
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\mixin\ExampleClientMixin.java
+// ============================================================
+package com.igoo.client.mixin;
+
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+// import org.spongepowered.asm.mixin.injection.At;
+// import org.spongepowered.asm.mixin.injection.Inject;
+// import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(Minecraft.class)
+public class ExampleClientMixin {
+    
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\renderer\BabyBatRenderer.java
+// ============================================================
+package com.igoo.client.renderer;
+
+import com.igoo.entity.BabyBat;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.resources.Identifier;
+
+public class BabyBatRenderer
+        extends HumanoidMobRenderer<BabyBat, HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
+
+    private static final Identifier TEXTURE =
+            Identifier.fromNamespaceAndPath("igoo", "textures/entity/baby_vampire_bat.png");
+
+    public BabyBatRenderer(EntityRendererProvider.Context context) {
+        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.25F);
+
+        // 👈 Dùng PLAYER_ARMOR chuẩn vanilla (4 layer riêng: helmet/chestplate/leggings/boots)
+        ArmorModelSet<HumanoidModel<HumanoidRenderState>> armorModels = ArmorModelSet.bake(
+                ModelLayers.PLAYER_ARMOR,
+                context.getModelSet(),
+                HumanoidModel::new
+        );
+
+        this.addLayer(new HumanoidArmorLayer<>(
+                this,
+                armorModels,
+                context.getEquipmentRenderer()
+        ));
+    }
+
+    @Override
+    public HumanoidRenderState createRenderState() {
+        return new HumanoidRenderState();
+    }
+
+    @Override
+    public Identifier getTextureLocation(HumanoidRenderState renderState) {
+        return TEXTURE;
+    }
+}.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\renderer\CursedHerobrineRenderer.java
+// ============================================================
+package com.igoo.client.renderer;
+
+import com.igoo.entity.CursedHerobrineBoss;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.resources.Identifier;
+
+public class CursedHerobrineRenderer extends HumanoidMobRenderer<CursedHerobrineBoss, HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("igoo", "textures/entity/cursed_herobrine.png");
+
+    public CursedHerobrineRenderer(EntityRendererProvider.Context context) {
+        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5F);
+    }
+    
+    @Override
+    public HumanoidRenderState createRenderState() {
+        return new HumanoidRenderState();
+    }
+    
+    @Override
+    public Identifier getTextureLocation(HumanoidRenderState renderState) {
+        return TEXTURE;
+    }
+    
+    
+}
+.
+.
+// ============================================================
+// FILE: src\client\java\com\igoo\client\renderer\HerobrineRenderer.java
+// ============================================================
+package com.igoo.client.renderer;
+
+import com.igoo.entity.HerobrineBoss;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.resources.Identifier;
+
+public class HerobrineRenderer extends HumanoidMobRenderer<HerobrineBoss, HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
+
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("igoo", "textures/entity/herobrine.png");
+
+    public HerobrineRenderer(EntityRendererProvider.Context context) {
+        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5F);
+    }
+
+    @Override
+    public HumanoidRenderState createRenderState() {
+        return new HumanoidRenderState();
+    }
+
+    @Override
+    public Identifier getTextureLocation(HumanoidRenderState renderState) {
+        return TEXTURE;
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\Igoo.java
+// ============================================================
+package com.igoo;
+
+import com.igoo.creativemodtab.ModCreativeModeTabs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.igoo.item.ModItems;
+import com.igoo.block.ModBlocks;
+import com.igoo.command.ModCommands;
+import com.igoo.entity.ModEntities;
+import com.igoo.event.AltarSummonEvent;
+import com.igoo.worldgen.ModBiomeModifications;
+
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.resources.Identifier;
+
+public class Igoo implements ModInitializer {
+    public static final String MOD_ID = "igoo";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    @Override
+    public void onInitialize() {
+        ModCreativeModeTabs.registerModCreativeModeTabs();
+        ModItems.registerModItems();
+        ModBlocks.registerModBlocks();
+        ModEntities.registerModEntities();
+        AltarSummonEvent.register();
+        ModBiomeModifications.register();
+        ModCommands.register();
+        LOGGER.info("Igoo mod initialized");
+    }
+
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\block\ModBlocks.java
+// ============================================================
+package com.igoo.block;
+
+import java.util.List;
+import java.util.function.Function;
+
+import com.igoo.Igoo;
+import com.igoo.item.ModItems;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
+public class ModBlocks {
+    // Blocks
+    public static final Block Aluminum_block = registerBlock("aluminum_block",
+        properties -> new Block(properties.strength(3.0f, 6.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Bronze_block = registerBlock("bronze_block",
+        properties -> new Block(properties.strength(4.0f, 8.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Carbon_steel_block = registerBlock("carbon_steel_block",
+        properties -> new Block(properties.strength(5.0f, 12.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Chromium_block = registerBlock("chromium_block",
+        properties -> new Block(properties.strength(5.0f, 10.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Stainless_steel_block = registerBlock("stainless_steel_block",
+        properties -> new Block(properties.strength(6.0f, 15.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Tin_block = registerBlock("tin_block",
+        properties -> new Block(properties.strength(2.5f, 5.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Titanium_alloy_block = registerBlock("titanium_alloy_block",
+        properties -> new Block(properties.strength(8.0f, 20.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Titanium_block = registerBlock("titanium_block",
+        properties -> new Block(properties.strength(7.0f, 18.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Tungsten_block = registerBlock("tungsten_block",
+        properties -> new Block(properties.strength(8.0f, 22.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Tungsten_carbide_block = registerBlock("tungsten_carbide_block",
+        properties -> new Block(properties.strength(10.0f, 30.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+
+    // Ores
+    public static final Block Aluminum_ore = registerBlock("aluminum_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(2, 5),
+        properties.strength(2.8f, 5.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Chromium_ore = registerBlock("chromium_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(2, 5),
+        properties.strength(4.0f, 8.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Tin_ore = registerBlock("tin_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(2, 5),
+        properties.strength(2.25f, 4.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Titanium_ore = registerBlock("titanium_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(2, 5),
+        properties.strength(6.5f, 15.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Tungsten_ore = registerBlock("tungsten_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(2, 5),
+        properties.strength(7f, 20.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    
+    public static final List<Block> ALL_METALS = List.of(
+        Aluminum_block,
+        Bronze_block,
+        Carbon_steel_block,
+        Chromium_block,
+        Stainless_steel_block,
+        Tin_block,
+        Titanium_alloy_block,
+        Titanium_block,
+        Tungsten_block,
+        Tungsten_carbide_block
+    );
+    
+    public static final List<Block> ALL_ORES = List.of(
+        Aluminum_ore,
+        Chromium_ore,
+        Tin_ore,
+        Titanium_ore,
+        Tungsten_ore
+    );
+    
+    // Yêu cầu cuốc chim đá trở lên
+    public static final List<Block> MINE_WITH_STONE = List.of(
+        Tin_ore,
+        Chromium_ore,
+        Aluminum_block,
+        Bronze_block,
+        Carbon_steel_block,
+        Tin_block,
+        Chromium_block
+    );
+
+    // Yêu cầu cuốcchim sắt trở lên
+    public static final List<Block> MINE_WITH_IRON = List.of(
+        Stainless_steel_block
+    );
+
+    // Yêu cầu cuốc chim kim cương trở lên
+    public static final List<Block> MINE_WITH_DIAMOND = List.of(
+        Titanium_ore,
+        Tungsten_ore,
+        Titanium_alloy_block,
+        Titanium_block,
+        Tungsten_block,
+        Tungsten_carbide_block
+    );
+    
+    public record OreDrop(Item raw, int min, int max) {}
+
+    public static final Map<Block, OreDrop> ORE_DROPS = Map.of(
+        Aluminum_ore, new OreDrop(ModItems.Raw_aluminum, 2, 5),
+        Tin_ore,      new OreDrop(ModItems.Raw_tin,      2, 4),
+        Chromium_ore, new OreDrop(ModItems.Raw_chromium, 1, 2),
+        Titanium_ore, new OreDrop(ModItems.Raw_titanium, 1, 2),
+        Tungsten_ore, new OreDrop(ModItems.Raw_tungsten, 1, 1)
+    );
+    
+    public static final List<Block> ALL_BLOCKS = Stream.concat(ALL_METALS.stream(), ALL_ORES.stream()).toList();
+    
+    
+    private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
+        Block toRegister = function.apply(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name))));
+        registerBlockItem(name, toRegister);
+        return Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name), toRegister);
+    }
+    
+    private static void registerBlockItem(String name, Block block) {
+        Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name),
+                new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix()
+                .setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name)))));
+    }
+    
+    public static void registerModBlocks() {
+        Igoo.LOGGER.info("Registering Mod Blocks for " + Igoo.MOD_ID);
+    }
+}
+.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\command\EnchantCommand.java
+// ============================================================
+package com.igoo.command;
+
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+
+public class EnchantCommand {
+
+    private static final String NAME = "enchant";
+    private static final int MIN_LEVEL = 1;
+    private static final int MAX_LEVEL = 255;
+
+    /**
+     * Build subcommand tree:
+     * <pre>
+     *   /igoo enchant &lt;enchantment&gt; &lt;level&gt;
+     * </pre>
+     */
+    public static LiteralArgumentBuilder<CommandSourceStack> build(CommandBuildContext ctx) {
+        return Commands.literal(NAME)
+                .then(Commands.argument("enchantment",
+                                ResourceArgument.resource(ctx, Registries.ENCHANTMENT))
+                        .then(Commands.argument("level",
+                                        IntegerArgumentType.integer(MIN_LEVEL, MAX_LEVEL))
+                                .executes(EnchantCommand::execute)));
+    }
+
+    private static int execute(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack source = ctx.getSource();
+
+        // Phải là player (không dùng từ console)
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            source.sendFailure(Component.literal("§cLệnh này chỉ dùng được bởi người chơi!"));
+            return 0;
+        }
+
+        // Tay chính phải cầm item
+        ItemStack stack = player.getMainHandItem();
+        if (stack.isEmpty()) {
+            source.sendFailure(Component.literal("§cTay chính phải cầm vật phẩm!"));
+            return 0;
+        }
+
+        // Lấy enchantment
+        Holder<Enchantment> enchantment;
+        try {
+            enchantment = ResourceArgument.getEnchantment(ctx, "enchantment");
+        } catch (Exception e) {
+            source.sendFailure(Component.literal("§cKhông tìm thấy enchantment!"));
+            return 0;
+        }
+
+        int level = IntegerArgumentType.getInteger(ctx, "level");
+
+        // Enchant bất kỳ item
+        EnchantmentHelper.updateEnchantments(stack,
+                mutable -> mutable.set(enchantment, level));
+
+        // Thông báo
+        String enchantName = enchantment.value().description().getString();
+        String itemName = stack.getHoverName().getString();
+        source.sendSuccess(() -> Component.literal(
+                "§aĐã enchant §e" + enchantName + " " + toRoman(level)
+                        + " §avào §e" + itemName + " §a(level " + level + ")"
+        ), false);
+
+        return 1;
+    }
+
+    /** Chuyển số → số La Mã (1–255) */
+    private static String toRoman(int n) {
+        if (n <= 0 || n > 3999) return String.valueOf(n);
+
+        int[] values =    {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = {"M",  "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < values.length; i++) {
+            while (n >= values[i]) {
+                sb.append(symbols[i]);
+                n -= values[i];
+            }
+        }
+        return sb.toString();
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\command\FakePlayerCommand.java
+// ============================================================
+package com.igoo.command;
+
+import com.igoo.entity.BotPlayer;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public class FakePlayerCommand {
+
+    public static LiteralArgumentBuilder<CommandSourceStack> build() {
+        return Commands.literal("player")
+                .then(Commands.literal("spawn")
+                        .then(Commands.argument("count", IntegerArgumentType.integer(1, 50))
+                                .executes(FakePlayerCommand::executeSpawn)))
+                .then(Commands.literal("list")
+                        .executes(FakePlayerCommand::executeList))
+                .then(Commands.literal("remove")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .suggests(FakePlayerCommand::suggestBotNames)
+                                .executes(FakePlayerCommand::executeRemove)))
+                .then(Commands.literal("mode")
+                        .then(Commands.argument("mode", StringArgumentType.word())
+                                .suggests(FakePlayerCommand::suggestModes)
+                                .executes(ctx -> setModeFor(ctx, null))
+                                .then(Commands.argument("name", StringArgumentType.word())
+                                        .suggests(FakePlayerCommand::suggestBotNames)
+                                        .executes(ctx -> setModeFor(ctx,
+                                                StringArgumentType.getString(ctx, "name"))))));
+    }
+
+    private static int executeSpawn(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack source = ctx.getSource();
+        int count = IntegerArgumentType.getInteger(ctx, "count");
+        ServerPlayer spawner = source.getPlayer();
+        int spawned = FakePlayerManager.spawnFakePlayers(source.getServer(), spawner, count);
+        if (spawned <= 0) {
+            source.sendFailure(Component.literal("§cKhông thể triệu hồi bot."));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("§aĐã triệu hồi §e" + spawned + " §abot."), true);
+        return spawned;
+    }
+
+    private static int executeList(CommandContext<CommandSourceStack> ctx) {
+        List<BotPlayer> bots = collectBots(ctx);
+        CommandSourceStack source = ctx.getSource();
+
+        if (bots.isEmpty()) {
+            source.sendSuccess(() -> Component.literal("§eKhông có bot nào."), false);
+            return 0;
+        }
+
+        source.sendSuccess(() -> Component.literal(
+                "§6=== Bot đang active (" + bots.size() + ") ==="), false);
+
+        for (BotPlayer bot : bots) {
+            BlockPos pos = bot.blockPosition();
+            // 👈 getName() → name()
+            String botName = bot.getGameProfile().name();
+            source.sendSuccess(() -> Component.literal(String.format(
+                    "§e- §f%s §7| §amode=§f%s §7| §f(%d, %d, %d) §7| §c%.0f/%.0f HP",
+                    botName,
+                    bot.getMode().name().toLowerCase(),
+                    pos.getX(), pos.getY(), pos.getZ(),
+                    bot.getHealth(), bot.getMaxHealth())), false);
+        }
+        return bots.size();
+    }
+
+    private static int executeRemove(CommandContext<CommandSourceStack> ctx) {
+        String name = StringArgumentType.getString(ctx, "name");
+        List<BotPlayer> toRemove = new ArrayList<>();
+        CommandSourceStack source = ctx.getSource();
+
+        if (name.equalsIgnoreCase("all")) {
+            toRemove.addAll(collectBots(ctx));
+        } else {
+            ServerPlayer p = source.getServer().getPlayerList().getPlayerByName(name);
+            if (p instanceof BotPlayer bot) toRemove.add(bot);
+        }
+
+        if (toRemove.isEmpty()) {
+            source.sendFailure(Component.literal("§cKhông tìm thấy bot: " + name));
+            return 0;
+        }
+
+        for (BotPlayer bot : toRemove) {
+            source.getServer().getPlayerList().remove(bot);
+        }
+        final int count = toRemove.size();
+        source.sendSuccess(() -> Component.literal("§aĐã xóa §e" + count + " §abot."), false);
+        return count;
+    }
+
+    private static int setModeFor(CommandContext<CommandSourceStack> ctx, String botName) {
+        String modeName = StringArgumentType.getString(ctx, "mode").toUpperCase();
+        BotPlayer.Mode mode;
+        try {
+            mode = BotPlayer.Mode.valueOf(modeName);
+        } catch (IllegalArgumentException e) {
+            ctx.getSource().sendFailure(Component.literal("§cMode không hợp lệ: " + modeName));
+            return 0;
+        }
+
+        int changed = 0;
+        for (BotPlayer bot : collectBots(ctx)) {
+            // 👈 getName() → name()
+            if (botName == null || botName.equalsIgnoreCase("all")
+                    || bot.getGameProfile().name().equalsIgnoreCase(botName)) {
+                bot.setMode(mode);
+                changed++;
+            }
+        }
+
+        if (changed == 0) {
+            ctx.getSource().sendFailure(Component.literal("§cKhông tìm thấy bot: " + botName));
+            return 0;
+        }
+        final int c = changed;
+        final String target = botName == null ? "tất cả" : botName;
+        ctx.getSource().sendSuccess(() -> Component.literal(
+                "§aĐổi mode §e" + mode.name().toLowerCase() + " §acho §e" + target
+                        + " §a(" + c + " bot)"), false);
+        return changed;
+    }
+
+    private static List<BotPlayer> collectBots(CommandContext<CommandSourceStack> ctx) {
+        List<BotPlayer> bots = new ArrayList<>();
+        for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
+            if (p instanceof BotPlayer bot) bots.add(bot);
+        }
+        return bots;
+    }
+
+    private static CompletableFuture<Suggestions> suggestModes(
+            CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        String rem = builder.getRemaining().toLowerCase();
+        for (BotPlayer.Mode m : BotPlayer.Mode.values()) {
+            String n = m.name().toLowerCase();
+            if (n.startsWith(rem)) builder.suggest(n);
+        }
+        return builder.buildFuture();
+    }
+
+    private static CompletableFuture<Suggestions> suggestBotNames(
+            CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        String rem = builder.getRemaining().toLowerCase();
+        if ("all".startsWith(rem)) builder.suggest("all");
+        for (ServerPlayer p : ctx.getSource().getServer().getPlayerList().getPlayers()) {
+            if (p instanceof BotPlayer) {
+                // 👈 getName() → name()
+                String n = p.getGameProfile().name();
+                if (n.toLowerCase().startsWith(rem)) builder.suggest(n);
+            }
+        }
+        return builder.buildFuture();
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\command\FakePlayerManager.java
+// ============================================================
+package com.igoo.command;
+
+import com.igoo.entity.BotPlayer;
+import com.igoo.network.FakeClientConnection;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import java.util.Random;
+import java.util.UUID;
+
+public class FakePlayerManager {
+
+    private static final Random RANDOM = new Random();
+    private static final String NAME_PREFIX = "Bot_";
+
+    public static int spawnFakePlayers(MinecraftServer server, ServerPlayer spawner, int count) {
+        if (!server.isPublished()) return -1;
+
+        PlayerList playerList = server.getPlayerList();
+        ServerLevel level = server.overworld();
+        int spawned = 0;
+
+        for (int i = 0; i < count; i++) {
+            String name = generateUniqueName(playerList);
+            UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
+            GameProfile profile = new GameProfile(uuid, name);
+
+            BotPlayer bot = new BotPlayer(level, profile);
+            bot.setOwner(spawner);   // 👈 bot biết ai là chủ
+
+            // Give vật phẩm để bot có thể xây / đánh
+            bot.getInventory().add(new ItemStack(Items.STONE, 64));
+            bot.getInventory().add(new ItemStack(Items.DIRT, 64));
+            bot.getInventory().add(new ItemStack(Items.COBBLESTONE, 64));
+            bot.getInventory().add(new ItemStack(Items.DIAMOND_SWORD));
+            bot.getInventory().add(new ItemStack(Items.IRON_PICKAXE));
+
+            FakeClientConnection connection = new FakeClientConnection();
+            try {
+                CommonListenerCookie cookie = CommonListenerCookie.createInitial(profile, false);
+                playerList.placeNewPlayer(connection, bot, cookie);
+                spawned++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return spawned;
+    }
+
+    private static String generateUniqueName(PlayerList playerList) {
+        String name;
+        do { name = NAME_PREFIX + RANDOM.nextInt(10000); }
+        while (playerList.getPlayerByName(name) != null);
+        return name;
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\command\HealCommand.java
+// ============================================================
+package com.igoo.command;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+public class HealCommand {
+
+    public static LiteralArgumentBuilder<CommandSourceStack> build() {
+        return Commands.literal("heal")
+                .executes(HealCommand::execute);
+    }
+
+    private static int execute(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack source = ctx.getSource();
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            source.sendFailure(Component.literal("§cChỉ player mới dùng được!"));
+            return 0;
+        }
+        player.setHealth(player.getMaxHealth());
+        player.getFoodData().setFoodLevel(20);
+        source.sendSuccess(() -> Component.literal("§aĐã hồi đầy máu và thức ăn!"), false);
+        return 1;
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\command\ModCommands.java
+// ============================================================
+package com.igoo.command;
+
+import com.igoo.Igoo;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+
+public class ModCommands {
+
+    private static final String ROOT = "igoo";
+
+    public static void register() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, environment) ->
+                registerAll(dispatcher, buildContext));
+        Igoo.LOGGER.info("Registered Igoo commands");
+    }
+
+    private static void registerAll(CommandDispatcher<CommandSourceStack> dispatcher,
+                                     CommandBuildContext buildContext) {
+
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(ROOT)
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
+
+        root.then(EnchantCommand.build(buildContext));
+        root.then(HealCommand.build());
+        root.then(FakePlayerCommand.build());
+
+        dispatcher.register(root);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\creativemodtab\ModCreativeModeTabs.java
+// ============================================================
+package com.igoo.creativemodtab;
+
+import com.igoo.Igoo;
+import com.igoo.block.ModBlocks;
+import com.igoo.item.ModItems;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+
+public class ModCreativeModeTabs {
+//    Item
+    public static final CreativeModeTab ITEM_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "items"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_ingot))
+    .title(Component.translatable("creativemodetab.igoo.items"))
+    .displayItems((parameters, output) -> {ModItems.ALL_ITEMS.forEach(output::accept);})
+    .build());
+
+//    Food
+    public static final CreativeModeTab FOOD_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "foods"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Chicken_wing))
+    .title(Component.translatable("creativemodetab.igoo.foods"))
+    .displayItems((parameters, output) -> {ModItems.ALL_FOODS.forEach(output::accept);})
+    .build());
+
+    
+//    Block
+    public static final CreativeModeTab BLOCK_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "blocks"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.Aluminum_block))
+    .title(Component.translatable("creativemodetab.igoo.blocks"))
+    .displayItems((parameters, output) -> {
+        ModBlocks.ALL_BLOCKS.forEach(output::accept);
+        })
+    .build());
+    
+//    Tools
+    public static final CreativeModeTab TOOL_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tools"),
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_pickaxe))
+    .title(Component.translatable("creativemodetab.igoo.tools"))
+    .displayItems((parameters, output) -> {ModItems.ALL_TOOLS.forEach(output::accept);})
+    .build());
+    
+    public static void registerModCreativeModeTabs() {
+        Igoo.LOGGER.info("Registering Creative Mode Tabs for " + Igoo.MOD_ID);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\entity\BabyBat.java
+// ============================================================
+package com.igoo.entity;
+
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.level.Level;
+
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+
+public class BabyBat extends TamableAnimal {
+
+    // Các slot armor sẽ được tự động mặc
+    private static final EquipmentSlot[] ARMOR_SLOTS = {
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
+    };
+
+    // ============================================
+    // MANUAL SWING ANIMATION
+    // ============================================
+    private static final int SWING_ANIM_DURATION = 6;
+    private int manualSwingTimer = 0;
+
+    public BabyBat(EntityType<? extends BabyBat> entityType, Level level) {
+        super(entityType, level);
+        this.setTame(false, false);
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Animal.createAnimalAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                // 👈 Tốc độ 0.3 — nhanh gấp 3 lần player
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
+                .add(Attributes.FOLLOW_RANGE, 16.0D)
+                .add(Attributes.ATTACK_DAMAGE, 3.0D)
+                .add(Attributes.ATTACK_SPEED, 4.0D);
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2D, true));
+        this.goalSelector.addGoal(4, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F));
+        this.goalSelector.addGoal(5, new EatBlockGoal(this));
+        this.goalSelector.addGoal(6, new SeekItemGoal(this, 1.0D, 12));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+
+        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
+
+        TargetingConditions.Selector enemySelector = (entity, level) ->
+                entity instanceof Enemy && !(entity instanceof Creeper);
+
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(
+                this, Mob.class, 10, true, false, enemySelector
+        ));
+    }
+
+    // ============================================
+    // TICK + ANIMATION
+    // ============================================
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.manualSwingTimer > 0) {
+            this.manualSwingTimer--;
+        }
+    }
+
+    @Override
+    public float getAttackAnim(float partialTick) {
+        if (this.manualSwingTimer > 0) {
+            float progress = (SWING_ANIM_DURATION - this.manualSwingTimer + partialTick)
+                    / (float) SWING_ANIM_DURATION;
+            return (float) Math.sin(progress * Math.PI);
+        }
+        return super.getAttackAnim(partialTick);
+    }
+
+    // ============================================
+    // TẤN CÔNG
+    // ============================================
+    @Override
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        this.manualSwingTimer = SWING_ANIM_DURATION;
+        this.swing(InteractionHand.MAIN_HAND);
+
+        DamageSource source = this.damageSources().mobAttack(this);
+        float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        boolean hurt = target.hurtServer(level, source, damage);
+
+        if (hurt) {
+            this.causeExtraKnockback(target, 0.4f, target.getDeltaMovement(), source, damage, false);
+            this.playAttackSound();
+
+            level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,
+                    target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(),
+                    3, 0.2, 0.2, 0.2, 0.1);
+
+            level.sendParticles(ParticleTypes.CRIT,
+                    this.getX() + this.getLookAngle().x * 0.5,
+                    this.getY() + this.getEyeHeight() * 0.5,
+                    this.getZ() + this.getLookAngle().z * 0.5,
+                    5, 0.15, 0.15, 0.15, 0.05);
+        }
+        return hurt;
+    }
+
+    @Override
+    protected void playAttackSound() {
+        this.playSound(SoundEvents.BAT_HURT, 0.8f, 1.5f);
+    }
+
+    // ============================================
+    // AUTO-EQUIP ARMOR
+    // ============================================
+    /**
+     * Thử mặc item vào slot armor tương ứng.
+     * @return true nếu đã mặc thành công, false nếu không phải armor
+     *         hoặc slot đã có đồ.
+     */
+    public boolean tryEquipArmor(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+
+        // Xác định slot từ EQUIPPABLE component
+        EquipmentSlot slot = this.getEquipmentSlotForItem(stack);
+        if (slot == EquipmentSlot.MAINHAND) return false;       // không phải armor
+        if (!this.canUseSlot(slot)) return false;
+        if (!this.getItemBySlot(slot).isEmpty()) return false;  // slot đã có đồ
+
+        // Mặc vào
+        ItemStack toEquip = stack.copy();
+        toEquip.setCount(1);
+        this.setItemSlot(slot, toEquip);
+
+        // Âm thanh mặc giáp (dùng sound của chính item nếu có)
+        Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+        if (equippable != null) {
+            this.level().playSound(null, this.blockPosition(),
+                    equippable.equipSound().value(),
+                    SoundSource.NEUTRAL, 0.8f, 1.0f);
+        } else {
+            this.level().playSound(null, this.blockPosition(),
+                    SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+                    SoundSource.NEUTRAL, 0.8f, 1.0f);
+        }
+
+        // Particle vui mắt
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER,
+                    this.getX(), this.getY() + 0.5, this.getZ(),
+                    5, 0.3, 0.3, 0.3, 0.1);
+        }
+
+        return true;
+    }
+
+    /** Kiểm tra còn slot armor nào trống không */
+    public boolean hasEmptyArmorSlot() {
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
+            if (this.getItemBySlot(slot).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ============================================
+    // TƯƠNG TÁC NGƯỜI CHƠI
+    // ============================================
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemstack = player.getItemInHand(hand);
+
+        // ========================================
+        // 1. VẮT SỮA BẰNG XÔ
+        // ========================================
+        if (itemstack.is(Items.BUCKET) && this.isTame()) {
+            ItemStack milkBucket = new ItemStack(Items.MILK_BUCKET);
+
+            if (player.isCreative()) {
+                if (!player.getInventory().add(milkBucket)) {
+                    player.drop(milkBucket, false);
+                }
+            } else {
+                if (itemstack.getCount() == 1) {
+                    player.setItemInHand(hand, milkBucket);
+                } else {
+                    itemstack.shrink(1);
+                    if (!player.getInventory().add(milkBucket)) {
+                        player.drop(milkBucket, false);
+                    }
+                }
+            }
+
+            this.level().playSound(null, this.blockPosition(),
+                    SoundEvents.COW_MILK, SoundSource.NEUTRAL, 1.0F, 1.0F);
+
+            return InteractionResult.SUCCESS;
+        }
+
+        // ========================================
+        // 2. LÚA MÌ
+        // ========================================
+        if (itemstack.is(Items.WHEAT)) {
+            if (!this.isTame()) {
+                if (!player.isCreative()) itemstack.shrink(1);
+                if (this.random.nextInt(3) == 0) {
+                    this.tame(player);
+                    this.navigation.stop();
+                    this.setTarget(null);
+                    this.level().broadcastEntityEvent(this, (byte) 7);
+                } else {
+                    this.level().broadcastEntityEvent(this, (byte) 6);
+                }
+                return InteractionResult.SUCCESS;
+            } else if (this.getHealth() < this.getMaxHealth()) {
+                if (!player.isCreative()) itemstack.shrink(1);
+                this.heal(4.0F);
+                this.level().playSound(null, this.blockPosition(),
+                        SoundEvents.GENERIC_EAT.value(), this.getSoundSource(), 1.0F, 1.0F);
+                if (this.level() instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(ParticleTypes.HEART,
+                            this.getX(), this.getY() + 0.5, this.getZ(),
+                            3, 0.5, 0.5, 0.5, 0.1);
+                }
+                return InteractionResult.SUCCESS;
+            } else if (this.canFallInLove() && this.isTame()) {
+                if (!player.isCreative()) itemstack.shrink(1);
+                this.setInLove(player);
+                this.level().playSound(null, this.blockPosition(),
+                        SoundEvents.GENERIC_EAT.value(), this.getSoundSource(), 1.0F, 1.0F);
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        // ========================================
+        // 3. TAY KHÔNG + LÀ CHỦ
+        // ========================================
+        if (this.isTame() && itemstack.isEmpty() && this.isOwnedBy(player)) {
+            // Shift → thả item đang cầm
+            if (player.isShiftKeyDown()) {
+                ItemStack held = this.getItemBySlot(EquipmentSlot.MAINHAND);
+                if (!held.isEmpty()) {
+                    if (this.level() instanceof ServerLevel serverLevel) {
+                        this.spawnAtLocation(serverLevel, held);
+                    }
+                    this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                    this.level().playSound(null, this.blockPosition(),
+                            SoundEvents.ITEM_PICKUP, SoundSource.NEUTRAL, 0.5f, 1.0f);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+            // Click thường → ngồi/đứng
+            this.setOrderedToSit(!this.isOrderedToSit());
+            this.jumping = false;
+            this.navigation.stop();
+            this.setTarget(null);
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(player, hand);
+    }
+
+    // ============================================
+    // CHẶN TẤN CÔNG CHỦ
+    // ============================================
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        if (target == this.getOwner()) return false;
+        return super.canAttack(target);
+    }
+
+    // ============================================
+    // DROP 100% EQUIPMENT KHI CHẾT
+    // ============================================
+    @Override
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, source, recentlyHit);
+        // Drop main hand
+        dropSlot(level, EquipmentSlot.MAINHAND);
+        // Drop armor
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
+            dropSlot(level, slot);
+        }
+    }
+
+    private void dropSlot(ServerLevel level, EquipmentSlot slot) {
+        ItemStack stack = this.getItemBySlot(slot);
+        if (!stack.isEmpty()) {
+            this.spawnAtLocation(level, stack);
+            this.setItemSlot(slot, ItemStack.EMPTY);
+        }
+    }
+
+    @Override
+    protected void dropEquipment(ServerLevel level) {
+        // Đã xử lý trong dropCustomDeathLoot → chặn vanilla drop để tránh double
+    }
+
+    // ============================================
+    // TAME / BREED
+    // ============================================
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == 7) {
+            this.spawnTamingParticles(true);
+        } else if (id == 6) {
+            this.spawnTamingParticles(false);
+        } else {
+            super.handleEntityEvent(id);
+        }
+    }
+
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        return ModEntities.BABY_BAT.create(level, EntitySpawnReason.BREEDING);
+    }
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return stack.is(Items.WHEAT);
+    }
+
+    // ============================================
+    // CUSTOM GOAL: Tìm item → thử mặc giáp hoặc cầm tay
+    // ============================================
+    public static class SeekItemGoal extends Goal {
+        private final BabyBat bat;
+        private final double speedModifier;
+        private final int searchRange;
+        private ItemEntity targetItem;
+        private int cooldown;
+
+        public SeekItemGoal(BabyBat bat, double speed, int range) {
+            this.bat = bat;
+            this.speedModifier = speed;
+            this.searchRange = range;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (this.cooldown > 0) {
+                this.cooldown--;
+                return false;
+            }
+            if (this.bat.isOrderedToSit()) return false;
+
+            // 👈 Chỉ dừng khi CẢ mainhand + armor đều đầy
+            boolean mainhandFull = !this.bat.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty();
+            boolean armorFull = !this.bat.hasEmptyArmorSlot();
+            if (mainhandFull && armorFull) return false;
+
+            List<ItemEntity> items = this.bat.level().getEntitiesOfClass(
+                    ItemEntity.class,
+                    this.bat.getBoundingBox().inflate(this.searchRange),
+                    item -> !item.isRemoved() && !item.getItem().isEmpty()
+            );
+            if (items.isEmpty()) return false;
+
+            items.sort(Comparator.comparingDouble(this.bat::distanceToSqr));
+            this.targetItem = items.get(0);
+            return true;
+        }
+
+        @Override
+        public void start() {
+            if (this.targetItem != null) {
+                this.bat.getNavigation().moveTo(this.targetItem, this.speedModifier);
+            }
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return this.targetItem != null
+                    && !this.targetItem.isRemoved()
+                    && this.bat.distanceToSqr(this.targetItem) < (double) (this.searchRange * this.searchRange);
+        }
+
+        @Override
+        public void tick() {
+            if (this.targetItem == null || this.targetItem.isRemoved()) return;
+
+            this.bat.getLookControl().setLookAt(this.targetItem);
+
+            if (this.bat.distanceToSqr(this.targetItem) < 4.0) {
+                this.bat.getNavigation().stop();
+
+                ItemStack stack = this.targetItem.getItem();
+                if (stack.isEmpty()) return;
+
+                // 👈 Ưu tiên 1: Thử mặc giáp
+                if (this.bat.tryEquipArmor(stack)) {
+                    stack.shrink(1);
+                    if (stack.isEmpty()) {
+                        this.targetItem.discard();
+                    } else {
+                        this.targetItem.setItem(stack);
+                    }
+                    return;
+                }
+
+                // 👈 Ưu tiên 2: Cầm tay (nếu tay trống)
+                if (this.bat.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
+                    ItemStack toHold = stack.copy();
+                    toHold.setCount(1);
+                    this.bat.setItemSlot(EquipmentSlot.MAINHAND, toHold);
+
+                    stack.shrink(1);
+                    if (stack.isEmpty()) {
+                        this.targetItem.discard();
+                    } else {
+                        this.targetItem.setItem(stack);
+                    }
+
+                    this.bat.level().playSound(null, this.bat.blockPosition(),
+                            SoundEvents.ITEM_PICKUP, SoundSource.NEUTRAL, 0.5f, 1.0f);
+
+                    if (this.bat.level() instanceof ServerLevel serverLevel) {
+                        serverLevel.sendParticles(ParticleTypes.HEART,
+                                this.bat.getX(), this.bat.getY() + 0.5, this.bat.getZ(),
+                                3, 0.3, 0.3, 0.3, 0.1);
+                    }
+                }
+            } else {
+                this.bat.getNavigation().moveTo(this.targetItem, this.speedModifier);
+            }
+        }
+
+        @Override
+        public void stop() {
+            this.targetItem = null;
+            this.cooldown = 20;
+        }
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\entity\BotPlayer.java
+// ============================================================
+package com.igoo.entity;
+
+import com.mojang.authlib.GameProfile;
+import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Comparator;
+import java.util.UUID;
+import java.util.function.Predicate;
+
+/**
+ * Bot player cho Minecraft 26.2 (Fabric).
+ *
+ * Các lỗi của bản cũ đã sửa:
+ *  1. tick() không gọi super.tick() / doTick() -> entity không được cập nhật (vật lý, trang bị, hồi chiêu đánh...).
+ *     FakeClientConnection.tick() rỗng nên doTick() cũng không bao giờ được gọi ở nơi khác.
+ *  2. Di chuyển phụ thuộc vào zza (bị hệ thống input của ServerPlayer ghi đè) -> giờ đặt vận tốc trực tiếp.
+ *  3. Tấn công dùng ATTACK_DAMAGE (=1) thay vì Player.attack(), và đang cầm khối đá thay vì kiếm
+ *     -> giờ tự chọn kiếm/rìu và gọi attack() đúng chuẩn.
+ *  4. BUILD_TOWER chỉ chạy khi đứng trên đất và dưới chân trống (không bao giờ xảy ra) -> giờ nhảy rồi đặt block.
+ *  5. BUILD_BRIDGE không ngồi (sneak) nên rơi khỏi mép -> giờ sneak và đặt block ở phía trước.
+ *  6. PATROL đảo hướng mỗi tick khi ra xa >10 block (rung lắc) -> giờ chỉ đảo khi còn đang đi ra xa.
+ *  7. FOLLOW/FLEE dùng getNearestPlayer có thể chọn nhầm bot khác -> giờ theo chủ, hoặc người chơi thật gần nhất.
+ *  8. MINER đào thẳng xuống rồi rơi -> giờ đào hầm ngang, dừng/quay đầu khi gặp chất lỏng hoặc hố.
+ *  9. Bỏ println debug, thêm xử lý khi bot chết.
+ */
+public class BotPlayer extends FakePlayer {
+
+    public enum Mode {
+        IDLE, WANDER, FOLLOW, FLEE, ATTACK, PVP, GUARD, PATROL,
+        BUILD_BRIDGE, BUILD_TOWER, MINER, JUMPER, DANCER
+    }
+
+    /** Hệ số đổi attribute MOVEMENT_SPEED (0.1) -> block/tick khi đi bộ (~0.216). */
+    private static final double WALK_FACTOR = 2.16D;
+    private static final double REACH = 3.0D;
+
+    private Mode mode = Mode.WANDER;
+    private UUID ownerUUID;
+
+    private int wanderTimer = 0;
+    private int wanderPause = 0;
+    private int buildCooldown = 0;
+    private int actionCooldown = 0;
+    private int blockedTicks = 0;
+    private int deadTicks = 0;
+    private float patrolYaw = 0f;
+    private BlockPos patrolCenter;
+
+    // Trạng thái mong muốn trong tick hiện tại
+    private boolean wantSprint = false;
+    private boolean wantSneak = false;
+
+    public BotPlayer(ServerLevel level, GameProfile profile) {
+        super(level, profile);
+        this.setInvulnerable(false);
+    }
+
+    // ============================================
+    // API
+    // ============================================
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        this.patrolCenter = null;
+        this.blockedTicks = 0;
+        this.wanderTimer = 0;
+        this.wanderPause = 0;
+        this.buildCooldown = 0;
+        this.actionCooldown = 0;
+    }
+
+    public Mode getMode() { return this.mode; }
+    public void setOwner(Player player) { this.ownerUUID = player != null ? player.getUUID() : null; }
+    public UUID getOwnerUUID() { return this.ownerUUID; }
+
+    // ============================================
+    // Cho phép server chạy physics + AI
+    // ============================================
+    @Override
+    public boolean isEffectiveAi() {
+        return true;
+    }
+
+    @Override
+    public boolean canSimulateMovement() {
+        return true;
+    }
+
+    @Override
+    public float getSpeed() {
+        return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED);
+    }
+
+    // ============================================
+    // TICK
+    // ============================================
+    @Override
+    public void tick() {
+        MinecraftServer server = this.level().getServer();
+        if (server == null) return;
+
+        if (!this.isAlive()) {
+            // Bot không tự hồi sinh được -> gỡ khỏi server sau 2 giây
+            if (++this.deadTicks == 40) {
+                server.execute(() -> server.getPlayerList().remove(this));
+            }
+            return;
+        }
+
+        if (this.buildCooldown > 0) this.buildCooldown--;
+        if (this.actionCooldown > 0) this.actionCooldown--;
+
+        this.zza = 0f;
+        this.xxa = 0f;
+        this.yya = 0f;
+        this.wantSprint = false;
+        this.wantSneak = false;
+
+        switch (this.mode) {
+            case IDLE         -> { }
+            case WANDER       -> this.tickWander();
+            case FOLLOW       -> this.tickFollow();
+            case FLEE         -> this.tickFlee();
+            case ATTACK       -> this.tickAttack(false);
+            case PVP          -> this.tickAttack(true);
+            case GUARD        -> this.tickGuard();
+            case PATROL       -> this.tickPatrol();
+            case BUILD_BRIDGE -> this.tickBuildBridge();
+            case BUILD_TOWER  -> this.tickBuildTower();
+            case MINER        -> this.tickMiner();
+            case JUMPER       -> this.tickJumper();
+            case DANCER       -> this.tickDancer();
+        }
+
+        if (this.isSprinting() != this.wantSprint) this.setSprinting(this.wantSprint);
+        if (this.isShiftKeyDown() != this.wantSneak) this.setShiftKeyDown(this.wantSneak);
+
+        // Giống Carpet: tick entity rồi tự gọi doTick() vì connection giả không tick.
+        try {
+            super.tick();
+            this.doTick();
+        } catch (NullPointerException ignored) {
+        }
+
+        if (this.tickCount % 10 == 0) {
+            ((ServerLevel) this.level()).getChunkSource().move(this);
+        }
+    }
+
+    // ============================================
+    // WANDER
+    // ============================================
+    private void tickWander() {
+        if (this.wanderPause > 0) {
+            this.wanderPause--;
+            return;
+        }
+        if (--this.wanderTimer <= 0) {
+            this.wanderTimer = 40 + this.random.nextInt(60);
+            if (this.random.nextInt(4) == 0) {
+                this.wanderPause = 20 + this.random.nextInt(30);
+                return;
+            }
+            this.rotateTo(this.random.nextFloat() * 360f);
+        }
+        this.walkForward(1.0f);
+        this.autoJump();
+    }
+
+    // ============================================
+    // FOLLOW
+    // ============================================
+    private void tickFollow() {
+        Player target = this.findFollowTarget(48.0);
+        if (target == null) { this.tickWander(); return; }
+
+        this.faceEntity(target);
+        double dist = this.distanceTo(target);
+        if (dist > 3.0) {
+            this.wantSprint = dist > 8.0;
+            this.walkForward(1.0f);
+            this.autoJump();
+        }
+    }
+
+    // ============================================
+    // FLEE
+    // ============================================
+    private void tickFlee() {
+        Player threat = this.nearestRealPlayer(16.0);
+        if (threat == null) { this.tickWander(); return; }
+
+        Vec3 away = this.position().subtract(threat.position());
+        this.rotateTo((float) Math.toDegrees(Math.atan2(-away.x, away.z)));
+        this.wantSprint = true;
+        this.walkForward(1.0f);
+        this.autoJump();
+    }
+
+    // ============================================
+    // ATTACK / PVP
+    // ============================================
+    private void tickAttack(boolean pvp) {
+        LivingEntity target = pvp ? this.findPlayerTarget(24.0) : this.findEnemyTarget(24.0);
+        if (target == null) {
+            // Không có mục tiêu -> đi theo chủ cho gọn
+            if (this.findFollowTarget(48.0) != null) this.tickFollow();
+            return;
+        }
+
+        this.selectHotbarWhere(s -> s.is(ItemTags.SWORDS));
+        this.faceEntity(target);
+
+        double reachSqr = REACH * REACH;
+        boolean inReach = target.getBoundingBox().distanceToSqr(this.getEyePosition()) <= reachSqr;
+
+        if (inReach) {
+            this.tryHit(target);
+        } else {
+            this.wantSprint = this.distanceTo(target) > 5.0;
+            this.walkForward(1.0f);
+            this.autoJump();
+        }
+    }
+
+    // ============================================
+    // GUARD
+    // ============================================
+    private void tickGuard() {
+        LivingEntity target = this.findEnemyTarget(8.0);
+        if (target == null) return;
+
+        this.faceEntity(target);
+        if (target.getBoundingBox().distanceToSqr(this.getEyePosition()) <= REACH * REACH) {
+            this.selectHotbarWhere(s -> s.is(ItemTags.SWORDS));
+            this.tryHit(target);
+        }
+    }
+
+    // ============================================
+    // PATROL
+    // ============================================
+    private void tickPatrol() {
+        if (this.patrolCenter == null) {
+            this.patrolCenter = this.blockPosition();
+            this.patrolYaw = this.getYRot();
+        }
+
+        double ox = this.getX() - (this.patrolCenter.getX() + 0.5);
+        double oz = this.getZ() - (this.patrolCenter.getZ() + 0.5);
+        double dist = Math.sqrt(ox * ox + oz * oz);
+
+        // Hướng đang đi (theo yaw của Minecraft)
+        double rad = Math.toRadians(this.patrolYaw);
+        double fx = -Math.sin(rad);
+        double fz = Math.cos(rad);
+        boolean movingAway = (ox * fx + oz * fz) > 0;
+
+        if (dist > 10.0 && movingAway) {
+            this.patrolYaw += 180f + (this.random.nextFloat() - 0.5f) * 40f;
+        }
+
+        if (this.horizontalCollision) {
+            if (++this.blockedTicks > 15) {
+                this.patrolYaw += 90f + this.random.nextInt(90);
+                this.blockedTicks = 0;
+            }
+        } else {
+            this.blockedTicks = 0;
+        }
+
+        this.rotateTo(this.patrolYaw);
+        this.walkForward(0.7f);
+        this.autoJump();
+    }
+
+    // ============================================
+    // BUILD_BRIDGE (đi + sneak + đặt block phía trước dưới chân)
+    // ============================================
+    private void tickBuildBridge() {
+        this.wantSneak = true;
+        this.autoJump();
+
+        Direction dir = this.getDirection();
+        BlockPos under = this.blockPosition().below();
+        BlockPos frontUnder = under.relative(dir);
+
+        if (this.buildCooldown <= 0) {
+            if (this.canPlaceAt(under)) {
+                if (this.tryPlaceBlock(under)) this.buildCooldown = 3;
+            } else if (this.canPlaceAt(frontUnder)) {
+                if (this.tryPlaceBlock(frontUnder)) this.buildCooldown = 3;
+            }
+        }
+
+        // Chỉ bước tới khi phía trước đã có nền
+        if (!this.canPlaceAt(frontUnder)) {
+            this.walkForward(1.0f);
+        }
+    }
+
+    // ============================================
+    // BUILD_TOWER (nhảy rồi đặt block dưới chân)
+    // ============================================
+    private void tickBuildTower() {
+        if (this.blockPosition().getY() >= this.level().getMaxY() - 2) return;
+
+        if (this.onGround()) {
+            this.jumpFromGround();
+            return;
+        }
+
+        BlockPos below = this.blockPosition().below();
+        // Khi đã nhảy lên đủ cao, ô dưới chân (nơi vừa đứng) sẽ trống -> đặt block vào đó
+        if (this.buildCooldown <= 0 && this.getY() >= below.getY() + 1.0 && this.canPlaceAt(below)) {
+            if (this.tryPlaceBlock(below)) this.buildCooldown = 3;
+        }
+    }
+
+    // ============================================
+    // MINER (đào hầm ngang theo hướng đang nhìn)
+    // ============================================
+    private void tickMiner() {
+        this.selectHotbarWhere(s -> s.is(ItemTags.PICKAXES));
+
+        Direction dir = this.getDirection();
+        this.rotateTo(dir.toYRot());
+
+        BlockPos front = this.blockPosition().relative(dir);
+        BlockPos[] hazards = { front, front.above(), front.below() };
+        for (BlockPos p : hazards) {
+            if (!this.level().getFluidState(p).isEmpty()) {
+                this.rotateTo(this.getYRot() + 90f);
+                return;
+            }
+        }
+
+        BlockPos[] column = { front, front.above() };
+        for (BlockPos pos : column) {
+            BlockState state = this.level().getBlockState(pos);
+            if (state.isAir()) continue;
+
+            if (state.getDestroySpeed(this.level(), pos) < 0) { // bedrock...
+                this.rotateTo(this.getYRot() + 90f);
+                return;
+            }
+            if (this.actionCooldown > 0) return;
+
+            this.gameMode.destroyBlock(pos);
+            this.swing(InteractionHand.MAIN_HAND);
+            this.actionCooldown = 5;
+            return;
+        }
+
+        // Đường thông -> kiểm tra có nền để đi tiếp không
+        if (this.level().getBlockState(front.below()).isAir()) {
+            this.rotateTo(this.getYRot() + 90f);
+            return;
+        }
+        this.walkForward(0.8f);
+    }
+
+    // ============================================
+    // JUMPER
+    // ============================================
+    private void tickJumper() {
+        if (this.onGround()) this.jumpFromGround();
+    }
+
+    // ============================================
+    // DANCER
+    // ============================================
+    private void tickDancer() {
+        if (this.tickCount % 5 == 0) this.rotateTo(this.getYRot() + 45f);
+        if (this.onGround() && this.random.nextInt(10) == 0) this.jumpFromGround();
+        this.wantSneak = (this.tickCount / 8) % 2 == 0;
+        if (this.random.nextInt(10) == 0) {
+            this.swing(this.random.nextBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+        }
+    }
+
+    // ============================================
+    // MOVEMENT HELPERS
+    // ============================================
+
+    /** Đi theo hướng yaw hiện tại bằng cách đặt thẳng vận tốc ngang (giữ nguyên vận tốc dọc). */
+    private void walkForward(float factor) {
+        double speed = this.getAttributeValue(Attributes.MOVEMENT_SPEED) * WALK_FACTOR * factor;
+        if (this.wantSneak) speed *= 0.3D;
+
+        float yaw = this.getYRot() * Mth.DEG_TO_RAD;
+        Vec3 d = this.getDeltaMovement();
+        double dy = d.y;
+        if (this.isInWater()) {
+            speed *= 0.6D;
+            dy = Math.min(dy + 0.04D, 0.2D); // nổi lên
+        }
+        this.setDeltaMovement(-Mth.sin(yaw) * speed, dy, Mth.cos(yaw) * speed);
+    }
+
+    private void autoJump() {
+        if (this.horizontalCollision && this.onGround()) this.jumpFromGround();
+    }
+
+    // ============================================
+    // COMBAT HELPERS
+    // ============================================
+    private void tryHit(LivingEntity target) {
+        if (this.getAttackStrengthScale(0.5F) < 1.0F) return;
+        this.swing(InteractionHand.MAIN_HAND);
+        this.attack(target); // xử lý vũ khí, enchant, knockback, crit chuẩn vanilla
+    }
+
+    private LivingEntity findEnemyTarget(double range) {
+        return this.level().getEntitiesOfClass(LivingEntity.class,
+                        this.getBoundingBox().inflate(range),
+                        e -> e != this && e.isAlive() && e instanceof Enemy)
+                .stream()
+                .min(Comparator.comparingDouble(this::distanceToSqr))
+                .orElse(null);
+    }
+
+    private LivingEntity findPlayerTarget(double range) {
+        return this.level().getEntitiesOfClass(Player.class,
+                        this.getBoundingBox().inflate(range),
+                        p -> p != this && p.isAlive() && !p.isCreative() && !p.isSpectator()
+                                && !(p instanceof BotPlayer)
+                                && (this.ownerUUID == null || !p.getUUID().equals(this.ownerUUID)))
+                .stream()
+                .min(Comparator.comparingDouble(this::distanceToSqr))
+                .orElse(null);
+    }
+
+    private Player findFollowTarget(double range) {
+        if (this.ownerUUID != null) {
+            Player owner = this.level().getPlayerByUUID(this.ownerUUID);
+            if (owner != null && owner.isAlive() && !owner.isSpectator()
+                    && owner.level() == this.level()) {
+                return owner;
+            }
+        }
+        return this.nearestRealPlayer(range);
+    }
+
+    private Player nearestRealPlayer(double range) {
+        Player best = null;
+        double bestDist = range * range;
+        for (Player p : this.level().players()) {
+            if (p == this || p instanceof BotPlayer || !p.isAlive() || p.isSpectator()) continue;
+            double d = this.distanceToSqr(p);
+            if (d < bestDist) {
+                bestDist = d;
+                best = p;
+            }
+        }
+        return best;
+    }
+
+    // ============================================
+    // INVENTORY HELPERS
+    // ============================================
+    private boolean selectHotbarWhere(Predicate<ItemStack> predicate) {
+        Inventory inv = this.getInventory();
+        if (predicate.test(inv.getItem(inv.getSelectedSlot()))) return true;
+        for (int i = 0; i < 9; i++) {
+            if (predicate.test(inv.getItem(i))) {
+                inv.setSelectedSlot(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ============================================
+    // BUILD HELPERS
+    // ============================================
+    private boolean canPlaceAt(BlockPos pos) {
+        return this.level().getBlockState(pos).canBeReplaced();
+    }
+
+    private ItemStack findPlaceableStack() {
+        Inventory inv = this.getInventory();
+        for (int i = 0; i < 36; i++) {
+            ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty() && stack.getItem() instanceof BlockItem bi && isPlaceable(bi)) {
+                if (i < 9) inv.setSelectedSlot(i);
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private static boolean isPlaceable(BlockItem item) {
+        var block = item.getBlock();
+        return block != Blocks.AIR
+                && !(block instanceof FallingBlock)
+                && !block.defaultBlockState().hasBlockEntity();
+    }
+
+    private boolean tryPlaceBlock(BlockPos pos) {
+        ItemStack stack = this.findPlaceableStack();
+        if (stack.isEmpty()) return false;
+
+        BlockItem blockItem = (BlockItem) stack.getItem();
+        BlockState state = blockItem.getBlock().defaultBlockState();
+        if (!state.canSurvive(this.level(), pos)) return false;
+
+        if (this.level().setBlock(pos, state, 3)) {
+            this.level().playSound(null, pos, state.getSoundType().getPlaceSound(),
+                    SoundSource.BLOCKS, 1.0f, 1.0f);
+            if (!this.isCreative()) stack.shrink(1);
+            this.swing(InteractionHand.MAIN_HAND);
+            return true;
+        }
+        return false;
+    }
+
+    // ============================================
+    // ROTATION HELPERS
+    // ============================================
+    private void faceEntity(Entity target) {
+        Vec3 diff = target.getEyePosition().subtract(this.getEyePosition());
+        double horiz = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
+        this.rotateTo((float) Math.toDegrees(Math.atan2(-diff.x, diff.z)));
+        this.setXRot((float) -Math.toDegrees(Math.atan2(diff.y, horiz)));
+    }
+
+    private void rotateTo(float yaw) {
+        this.setYRot(yaw);
+        this.setYHeadRot(yaw);
+        this.setYBodyRot(yaw);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\entity\CursedHerobrineBoss.java
+// ============================================================
+package com.igoo.entity;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+
+public class CursedHerobrineBoss extends HerobrineBoss {
+
+    public CursedHerobrineBoss(EntityType<? extends HerobrineBoss> entityType, Level level) {
+        super(entityType, level);
+        this.xpReward = 10000; // Kinh nghiệm rơi ra gấp 10 lần
+    }
+
+    // Ghi đè lại chỉ số, buff gấp 10 lần
+    public static AttributeSupplier.Builder createCursedAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 2500.0D)
+                .add(Attributes.ATTACK_DAMAGE, 70.0D)
+                .add(Attributes.ARMOR, 50.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.4D)
+                .add(Attributes.FOLLOW_RANGE, 200.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\entity\HerobrineBoss.java
+// ============================================================
+package com.igoo.entity;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+
+public class HerobrineBoss extends PathfinderMob {
+
+    private final ServerBossEvent bossBar = new ServerBossEvent(
+            UUID.randomUUID(),
+            this.getDisplayName(),
+            BossEvent.BossBarColor.RED,
+            BossEvent.BossBarOverlay.PROGRESS
+    );
+
+    private int skillCooldown = 100; // Khởi đầu chờ 5 giây
+
+    public HerobrineBoss(EntityType<? extends HerobrineBoss> entityType, Level level) {
+        super(entityType, level);
+        this.xpReward = 500;
+    }
+
+    public static AttributeSupplier.Builder createHerobrineAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 400.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
+                .add(Attributes.ATTACK_DAMAGE, 30.0D)
+                .add(Attributes.FOLLOW_RANGE, 200.0D)
+                .add(Attributes.ARMOR, 20.0D);
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2D, false));
+        this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
+        this.bossBar.addPlayer(player);
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        this.bossBar.removePlayer(player);
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        
+        // 1. Cập nhật thanh tiến trình (độ dài của thanh máu)
+        float healthRatio = this.getHealth() / this.getMaxHealth();
+        this.bossBar.setProgress(healthRatio);
+
+        // 2. Tự động đổi màu thanh máu dựa trên % máu
+        if (healthRatio > 0.66F) {
+            // Trên 66% máu: Màu Xanh Lá (Khỏe mạnh)
+            this.bossBar.setColor(BossEvent.BossBarColor.GREEN);
+        } else if (healthRatio > 0.33F) {
+            // Từ 33% đến 66% máu: Màu Vàng (Bị thương)
+            this.bossBar.setColor(BossEvent.BossBarColor.YELLOW);
+        } else {
+            // Dưới 33% máu: Màu Đỏ (Nguy kịch)
+            this.bossBar.setColor(BossEvent.BossBarColor.RED);
+        }
+
+        // 3. Logic kỹ năng
+        if (!this.level().isClientSide() && this.isAlive()) {
+            LivingEntity target = this.getTarget();
+            
+            if (target != null) {
+                if (this.skillCooldown > 0) {
+                    this.skillCooldown--;
+                } else {
+                    useRandomSkill(target);
+                    this.skillCooldown = 200; // Hồi chiêu 10 giây
+                }
+            }
+        }
+    }
+
+    private void useRandomSkill(LivingEntity target) {
+        // Tăng lên 5 kỹ năng (từ 0 đến 4)
+        int skill = this.getRandom().nextInt(5);
+        switch (skill) {
+            case 0 -> teleportBehindTarget(target);
+            case 1 -> summonLightning(target);
+            case 2 -> curseOfDarkness(target);
+            case 3 -> summonUndead(target);
+            case 4 -> fearKnockback(target);
+        }
+    }
+
+    // Hàm gửi tin nhắn đe dọa cho người chơi
+    private void sendBossMessage(LivingEntity target, String translationKey) {
+        if (target instanceof ServerPlayer serverPlayer) {
+            Component message = Component.translatable(translationKey).withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD);
+            serverPlayer.sendSystemMessage(message);
+        }
+    }
+
+    // ==========================================
+    // KỸ NĂNG 1: DỊCH CHUYỂN TỨC THỜI
+    // ==========================================
+    private void teleportBehindTarget(LivingEntity target) {
+        sendBossMessage(target, "message.igoo.herobrine.skill.teleport");
+        
+        Vec3 lookVec = target.getLookAngle();
+        double x = target.getX() - lookVec.x * 2;
+        double y = target.getY();
+        double z = target.getZ() - lookVec.z * 2;
+
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.PORTAL, this.getX(), this.getY() + 1, this.getZ(), 30, 0.5, 0.5, 0.5, 0.1);
+            this.level().playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 1.0f, 1.0f);
+            
+            this.randomTeleport(x, y, z, true);
+            
+            serverLevel.sendParticles(ParticleTypes.PORTAL, this.getX(), this.getY() + 1, this.getZ(), 30, 0.5, 0.5, 0.5, 0.1);
+            this.level().playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.0f, 0.5f);
+            
+            this.swing(InteractionHand.MAIN_HAND);
+            this.doHurtTarget(serverLevel, target);
+        }
+    }
+
+    // ==========================================
+    // KỸ NĂNG 2: TRIỆU HỒI SẤM SÉT
+    // ==========================================
+    private void summonLightning(LivingEntity target) {
+        sendBossMessage(target, "message.igoo.herobrine.skill.lightning");
+        
+        if (this.level() instanceof ServerLevel serverLevel) {
+            LightningBolt lightning = new LightningBolt(EntityTypes.LIGHTNING_BOLT, serverLevel);
+            lightning.setPos(target.getX(), target.getY(), target.getZ());
+            
+            serverLevel.addFreshEntity(lightning);
+            this.level().playSound(null, this.blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.HOSTILE, 1.0f, 1.0f);
+        }
+    }
+
+    // ==========================================
+    // KỸ NĂNG 3: LỜI NGUYỀN BÓNG TỐI
+    // ==========================================
+    private void curseOfDarkness(LivingEntity target) {
+        sendBossMessage(target, "message.igoo.herobrine.skill.curse");
+        
+        if (target instanceof Player player) {
+            player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0), this);
+            player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 160, 0), this);
+            
+            this.level().playSound(null, this.blockPosition(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.HOSTILE, 1.0f, 0.5f);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(ParticleTypes.SQUID_INK, player.getX(), player.getY() + 1, player.getZ(), 40, 1.0, 1.0, 1.0, 0.1);
+            }
+        }
+    }
+
+    // ==========================================
+    // KỸ NĂNG 4: TRIỆU HỒI QUÂN ĐOÀN XÁC SỐNG
+    // ==========================================
+    private void summonUndead(LivingEntity target) {
+        sendBossMessage(target, "message.igoo.herobrine.skill.undead");
+        
+        if (this.level() instanceof ServerLevel serverLevel) {
+            this.level().playSound(null, this.blockPosition(), SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.HOSTILE, 1.0f, 0.5f);
+            
+            // Triệu hồi 2-3 con Zombie xung quanh Herobrine
+            int count = this.getRandom().nextInt(2) + 2; // 2 hoặc 3 con
+            for (int i = 0; i < count; i++) {
+                double dx = this.getRandom().nextDouble() * 4 - 2;
+                double dz = this.getRandom().nextDouble() * 4 - 2;
+                
+                Zombie zombie = EntityTypes.ZOMBIE.spawn(serverLevel, 
+                        this.blockPosition().offset((int)dx, 0, (int)dz), 
+                        EntitySpawnReason.TRIGGERED);
+                
+                if (zombie != null) {
+                    zombie.setTarget(target);
+                    serverLevel.sendParticles(ParticleTypes.SMOKE, zombie.getX(), zombie.getY() + 1, zombie.getZ(), 20, 0.5, 0.5, 0.5, 0.1);
+                }
+            }
+        }
+    }
+
+    // ==========================================
+    // KỸ NĂNG 5: SÓNG XUNG KÍCH ĐẨY LÙI (FEAR)
+    // ==========================================
+    private void fearKnockback(LivingEntity target) {
+        sendBossMessage(target, "message.igoo.herobrine.skill.fear");
+        
+        // Tiếng Warden gầm thét
+        this.level().playSound(null, this.blockPosition(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 1.0f, 0.8f);
+        
+        // Tính toán hướng đẩy lùi từ Herobrine đến mục tiêu
+        Vec3 pushVec = target.position().subtract(this.position()).normalize();
+        
+        // Đẩy lùi mục tiêu ra xa (tốc độ X/Z, độ cao Y)
+        target.push(pushVec.x * 1.5, 0.6, pushVec.z * 1.5);
+        
+        // Gây sát thương nhẹ (2 máu)
+        if (this.level() instanceof ServerLevel serverLevel) {
+            target.hurtServer(serverLevel, this.damageSources().mobAttack(this), 2.0f);
+            
+            // Hiệu ứng sóng âm thanh
+            serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, this.getX(), this.getY() + 1, this.getZ(), 1, 0, 0, 0, 0);
+        }
+    }
+    
+    @Override
+    public void die(DamageSource source) {
+        super.die(source);
+
+        if (!this.level().isClientSide()) {
+            // Kiểm tra xem ai là người kết liễu boss
+            if (source.getEntity() instanceof ServerPlayer player) {
+                // Gửi thông báo toàn server với tên người chơi và tên boss
+                this.level().getServer().getPlayerList().broadcastSystemMessage(
+                        Component.translatable("message.igoo.boss.defeated", 
+                                player.getDisplayName(), 
+                                this.getDisplayName()),
+                        false // false = không ghi vào log chat, chỉ hiện trên màn hình
+                );
+            } else {
+                // Trường hợp boss chết do sát thương môi trường (rơi, cháy,...)
+                this.level().getServer().getPlayerList().broadcastSystemMessage(
+                        Component.translatable("message.igoo.boss.defeated_unknown", 
+                                this.getDisplayName()),
+                        false
+                );
+            }
+            
+            // (Tùy chọn) Phát âm thanh chiến thắng
+            this.level().playSound(null, this.blockPosition(), net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, net.minecraft.sounds.SoundSource.MASTER, 1.0f, 1.0f);
+        }
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\entity\ModEntities.java
+// ============================================================
+package com.igoo.entity;
+
+import com.igoo.Igoo;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+
+public class ModEntities {
+
+    public static final ResourceKey<EntityType<?>> HEROBRINE_KEY = ResourceKey.create(
+            Registries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "herobrine")
+    );
+
+    public static final EntityType<HerobrineBoss> HEROBRINE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            HEROBRINE_KEY,
+            EntityType.Builder.<HerobrineBoss>of(HerobrineBoss::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(10)
+                    .build(HEROBRINE_KEY)
+    );
+
+    public static final ResourceKey<EntityType<?>> CURSED_HEROBRINE_KEY = ResourceKey.create(
+            Registries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "cursed_herobrine")
+    );
+
+    public static final EntityType<CursedHerobrineBoss> CURSED_HEROBRINE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            CURSED_HEROBRINE_KEY,
+            EntityType.Builder.<CursedHerobrineBoss>of(CursedHerobrineBoss::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(10)
+                    .build(CURSED_HEROBRINE_KEY)
+    );
+    
+    public static final ResourceKey<EntityType<?>> BABY_BAT_KEY = ResourceKey.create(
+            Registries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "baby_bat")
+    );
+
+    public static final EntityType<BabyBat> BABY_BAT = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            BABY_BAT_KEY,
+            EntityType.Builder.<BabyBat>of(BabyBat::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(10)
+                    .build(BABY_BAT_KEY)
+    );
+
+    public static void registerModEntities() {
+        Igoo.LOGGER.info("Registering Entities for " + Igoo.MOD_ID);
+        FabricDefaultAttributeRegistry.register(HEROBRINE, HerobrineBoss.createHerobrineAttributes());
+        FabricDefaultAttributeRegistry.register(CURSED_HEROBRINE, CursedHerobrineBoss.createCursedAttributes());
+        FabricDefaultAttributeRegistry.register(BABY_BAT, BabyBat.createAttributes());
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\event\AltarSummonEvent.java
+// ============================================================
+package com.igoo.event;
+
+import com.igoo.Igoo;
+import com.igoo.entity.HerobrineBoss;
+import com.igoo.entity.ModEntities;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+
+public class AltarSummonEvent {
+
+    private static final Set<BlockPos> ACTIVE_ALTARS = new HashSet<>();
+
+    public static void register() {
+        UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+            if (level.isClientSide() || hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
+            }
+
+            ItemStack stack = player.getItemInHand(hand);
+            BlockPos pos = hitResult.getBlockPos();
+
+            if (stack.is(Items.FLINT_AND_STEEL) && level.getBlockState(pos).is(Blocks.NETHERRACK)) {
+                if (ACTIVE_ALTARS.contains(pos)) {
+                    return InteractionResult.FAIL;
+                }
+
+                if (isValidAltar(level, pos) && level instanceof ServerLevel serverLevel) {
+                    ACTIVE_ALTARS.add(pos);
+
+                    level.setBlockAndUpdate(pos.above(), Blocks.FIRE.defaultBlockState());
+                    level.playSound(null, pos, SoundEvents.WITHER_AMBIENT, SoundSource.HOSTILE, 1.0f, 1.0f);
+                    player.sendSystemMessage(Component.translatable("message.igoo.herobrine.summoning"));
+
+                    if (!player.isCreative()) {
+                        stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                    }
+
+                    CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> {
+                        serverLevel.getServer().execute(() -> {
+                            ACTIVE_ALTARS.remove(pos);
+                            destroyAltar(level, pos);
+
+                            ResourceKey<Biome> cursedBiomeKey = ResourceKey.create(
+                                    Registries.BIOME,
+                                    Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "cursed_savanna"));
+                            boolean isCursed = level.getBiome(pos).is(cursedBiomeKey);
+
+                            HerobrineBoss boss = isCursed
+                                    ? ModEntities.CURSED_HEROBRINE.spawn(serverLevel, pos.above(),
+                                            net.minecraft.world.entity.EntitySpawnReason.TRIGGERED)
+                                    : ModEntities.HEROBRINE.spawn(serverLevel, pos.above(),
+                                            net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
+
+                            if (boss != null) {
+                                if (isCursed) {
+                                    level.playSound(null, pos, SoundEvents.WARDEN_EMERGE,
+                                            SoundSource.HOSTILE, 1.0f, 0.5f);
+                                    player.sendSystemMessage(Component.translatable(
+                                            "message.igoo.herobrine.cursed_summoned"));
+                                } else {
+                                    level.playSound(null, pos, SoundEvents.WITHER_SPAWN,
+                                            SoundSource.HOSTILE, 1.0f, 1.0f);
+                                    player.sendSystemMessage(Component.translatable(
+                                            "message.igoo.herobrine.summoned"));
+                                }
+                            }
+                        });
+                    });
+
+                    return InteractionResult.SUCCESS;
+                }
+            }
+            return InteractionResult.PASS;
+        });
+    }
+
+    private static void destroyAltar(Level level, BlockPos center) {
+        level.removeBlock(center.above(), false);
+        level.removeBlock(center, false);
+
+        BlockPos goldCenter = center.below();
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                level.removeBlock(goldCenter.offset(x, 0, z), false);
+            }
+        }
+
+        BlockPos[] torchPositions = { center.north(), center.south(), center.east(), center.west() };
+        for (BlockPos torchPos : torchPositions) {
+            level.removeBlock(torchPos, false);
+        }
+
+        level.playSound(null, center, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 1.0f, 1.0f);
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.EXPLOSION,
+                    center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5,
+                    20, 1.5, 1.5, 1.5, 0.1);
+            serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE,
+                    center.getX() + 0.5, center.getY() + 0.5, center.getZ() + 0.5,
+                    30, 1.0, 1.0, 1.0, 0.05);
+        }
+    }
+
+    private static boolean isValidAltar(Level level, BlockPos center) {
+        BlockPos goldCenter = center.below();
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (!level.getBlockState(goldCenter.offset(x, 0, z)).is(Blocks.GOLD_BLOCK)) {
+                    return false;
+                }
+            }
+        }
+
+        BlockPos[] torchPositions = { center.north(), center.south(), center.east(), center.west() };
+        for (BlockPos torchPos : torchPositions) {
+            var state = level.getBlockState(torchPos);
+            if (!state.is(Blocks.REDSTONE_TORCH) && !state.is(Blocks.REDSTONE_WALL_TORCH)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\item\ModItems.java
+// ============================================================
+package com.igoo.item;
+
+import java.util.List;
+import java.util.function.Function;
+
+import com.igoo.Igoo;
+import com.igoo.entity.ModEntities;
+import java.util.stream.Stream;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.Consumables;
+
+public class ModItems {
+//    ==================================== Ingots ==============================================
+    // Ingot
+    public static final Item Aluminum_ingot = registerItem("aluminum_ingot", Item::new);
+    public static final Item Bronze_ingot = registerItem("bronze_ingot", Item::new);
+    public static final Item Carbon_steel_ingot = registerItem("carbon_steel_ingot", Item::new);
+    public static final Item Chromium_ingot = registerItem("chromium_ingot", Item::new);
+    public static final Item Stainless_steel_ingot = registerItem("stainless_steel_ingot", Item::new);
+    public static final Item Tin_ingot = registerItem("tin_ingot", Item::new);
+    public static final Item Titanium_alloy = registerItem("titanium_alloy", Item::new);
+    public static final Item Titanium_ingot = registerItem("titanium_ingot", Item::new);
+    public static final Item Tungsten_carbide_ingot = registerItem("tungsten_carbide_ingot", Item::new);
+    public static final Item Tungsten_ingot = registerItem("tungsten_ingot", Item::new);
+    //  Raw
+    public static final Item Raw_aluminum = registerItem("raw_aluminum", Item::new);
+    public static final Item Raw_chromium = registerItem("raw_chromium", Item::new);
+    public static final Item Raw_tin = registerItem("raw_tin", Item::new);
+    public static final Item Raw_titanium = registerItem("raw_titanium", Item::new);
+    public static final Item Raw_tungsten = registerItem("raw_tungsten", Item::new);
+    
+    // List
+    public static final List<Item> ALL_INGOTS = List.of(
+        Aluminum_ingot,
+        Bronze_ingot,
+        Carbon_steel_ingot,
+        Chromium_ingot,
+        Stainless_steel_ingot,
+        Tin_ingot,
+        Titanium_alloy,
+        Titanium_ingot,
+        Tungsten_carbide_ingot,
+        Tungsten_ingot
+    );
+    
+    public static final List<Item> ALL_RAWS = List.of(
+        Raw_aluminum,
+        Raw_chromium,
+        Raw_tin,
+        Raw_titanium,
+        Raw_tungsten
+    );
+    
+    public static final List<Item> ALL_ITEMS = Stream.concat(ALL_INGOTS.stream(), ALL_RAWS.stream()).toList();
+    
+//    ================================= TOOLS ===========================================
+    // ===== ALUMINUM =====
+    public static final Item Aluminum_sword   = registerSword("aluminum",   ModToolMaterials.ALUMINUM);
+    public static final Item Aluminum_pickaxe = registerPickaxe("aluminum", ModToolMaterials.ALUMINUM);
+    public static final Item Aluminum_axe     = registerAxe("aluminum",     ModToolMaterials.ALUMINUM);
+    public static final Item Aluminum_shovel  = registerShovel("aluminum",  ModToolMaterials.ALUMINUM);
+    public static final Item Aluminum_hoe     = registerHoe("aluminum",     ModToolMaterials.ALUMINUM);
+
+    // ===== TIN =====
+    public static final Item Tin_sword   = registerSword("tin",   ModToolMaterials.TIN);
+    public static final Item Tin_pickaxe = registerPickaxe("tin", ModToolMaterials.TIN);
+    public static final Item Tin_axe     = registerAxe("tin",     ModToolMaterials.TIN);
+    public static final Item Tin_shovel  = registerShovel("tin",  ModToolMaterials.TIN);
+    public static final Item Tin_hoe     = registerHoe("tin",     ModToolMaterials.TIN);
+
+    // ===== CHROMIUM =====
+    public static final Item Chromium_sword   = registerSword("chromium",   ModToolMaterials.CHROMIUM);
+    public static final Item Chromium_pickaxe = registerPickaxe("chromium", ModToolMaterials.CHROMIUM);
+    public static final Item Chromium_axe     = registerAxe("chromium",     ModToolMaterials.CHROMIUM);
+    public static final Item Chromium_shovel  = registerShovel("chromium",  ModToolMaterials.CHROMIUM);
+    public static final Item Chromium_hoe     = registerHoe("chromium",     ModToolMaterials.CHROMIUM);
+
+    // ===== TITANIUM =====
+    public static final Item Titanium_sword   = registerSword("titanium",   ModToolMaterials.TITANIUM);
+    public static final Item Titanium_pickaxe = registerPickaxe("titanium", ModToolMaterials.TITANIUM);
+    public static final Item Titanium_axe     = registerAxe("titanium",     ModToolMaterials.TITANIUM);
+    public static final Item Titanium_shovel  = registerShovel("titanium",  ModToolMaterials.TITANIUM);
+    public static final Item Titanium_hoe     = registerHoe("titanium",     ModToolMaterials.TITANIUM);
+
+    // ===== TUNGSTEN =====
+    public static final Item Tungsten_sword   = registerSword("tungsten",   ModToolMaterials.TUNGSTEN);
+    public static final Item Tungsten_pickaxe = registerPickaxe("tungsten", ModToolMaterials.TUNGSTEN);
+    public static final Item Tungsten_axe     = registerAxe("tungsten",     ModToolMaterials.TUNGSTEN);
+    public static final Item Tungsten_shovel  = registerShovel("tungsten",  ModToolMaterials.TUNGSTEN);
+    public static final Item Tungsten_hoe     = registerHoe("tungsten",     ModToolMaterials.TUNGSTEN);
+
+    public static final List<Item> ALL_TOOLS = List.of(
+        Aluminum_sword, Aluminum_pickaxe, Aluminum_axe, Aluminum_shovel, Aluminum_hoe,
+        Tin_sword, Tin_pickaxe, Tin_axe, Tin_shovel, Tin_hoe,
+        Chromium_sword, Chromium_pickaxe, Chromium_axe, Chromium_shovel, Chromium_hoe,
+        Titanium_sword, Titanium_pickaxe, Titanium_axe, Titanium_shovel, Titanium_hoe,
+        Tungsten_sword, Tungsten_pickaxe, Tungsten_axe, Tungsten_shovel, Tungsten_hoe
+    );
+
+    private static Item registerSword(String base, ToolMaterial mat) {
+        return registerItem(base + "_sword", p -> new Item(p.sword(mat, 3.0f, -2.4f)));
+    }
+
+    private static Item registerPickaxe(String base, ToolMaterial mat) {
+        return registerItem(base + "_pickaxe", p -> new Item(p.pickaxe(mat, 1.0f, -2.8f)));
+    }
+
+    private static Item registerAxe(String base, ToolMaterial mat) {
+        return registerItem(base + "_axe", p -> new AxeItem(mat, 6.0f, -3.0f, p));
+    }
+
+    private static Item registerShovel(String base, ToolMaterial mat) {
+        return registerItem(base + "_shovel", p -> new ShovelItem(mat, 1.5f, -3.0f, p));
+    }
+
+    private static Item registerHoe(String base, ToolMaterial mat) {
+        return registerItem(base + "_hoe", p -> new HoeItem(mat, -3.0f, 0.0f, p));
+    }
+    
+//    ================================================= Foods =================================================
+    //  Khai báo thuộc tính thức ăn
+    public static final FoodProperties RAW_MEAT             = new FoodProperties.Builder().nutrition(3).saturationModifier(0.3f).build();
+    public static final FoodProperties COOKED_MEAT          = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8f).build();
+    public static final FoodProperties BAGUETTE_FOOD        = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6f).build();
+    public static final FoodProperties CHEESE_FULL_FOOD     = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8f).build();
+    public static final FoodProperties CHEESE_SLICE_FOOD    = new FoodProperties.Builder().nutrition(2).saturationModifier(0.3f).build();
+
+    // Consumable cho thức ăn
+    public static final Consumable DEFAULT_FOOD  = Consumables.defaultFood().build();
+    public static final Consumable FAST_FOOD     = Consumables.defaultFood().consumeSeconds(0.8f) .build();
+    
+    public static final Item Chicken_wing        = registerItem("chicken_wing", p -> new Item(p.food(RAW_MEAT, DEFAULT_FOOD)));
+    public static final Item Chicken_wing_cooked = registerItem("chicken_wing_cooked", p -> new Item(p.food(COOKED_MEAT, DEFAULT_FOOD)));
+    public static final Item Pork                = registerItem("pork", p -> new Item(p.food(RAW_MEAT, DEFAULT_FOOD)));
+    public static final Item Pork_cooked         = registerItem("pork_cooked", p -> new Item(p.food(COOKED_MEAT, DEFAULT_FOOD)));
+    public static final Item Baguette            = registerItem("baguette", p -> new Item(p.food(BAGUETTE_FOOD, DEFAULT_FOOD)));
+    public static final Item Cheese_full         = registerItem("cheese_full", p -> new Item(p.food(CHEESE_FULL_FOOD, DEFAULT_FOOD)));
+    public static final Item Cheese_slice        = registerItem("cheese_slice", p -> new Item(p.food(CHEESE_SLICE_FOOD, FAST_FOOD)));
+    
+    public static final List<Item> ALL_FOODS = List.of(Chicken_wing, Chicken_wing_cooked, Pork, Pork_cooked, Baguette, Cheese_full, Cheese_slice);
+
+    public static Item registerItem(String name, Function<Item.Properties, Item> function) {
+        return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name),
+        function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name)))));
+    }
+    
+// ===================================================== Entities =======================================
+    public static final Item Herobrine_spawn_egg = registerItem("herobrine_spawn_egg",
+        p -> new SpawnEggItem(p.spawnEgg(ModEntities.HEROBRINE)));
+    
+    
+    
+    public static void registerModItems() {
+        Igoo.LOGGER.info("Registering Mod Items for " + Igoo.MOD_ID);
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\item\ModToolMaterials.java
+// ============================================================
+package com.igoo.item;
+
+import com.igoo.Igoo;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ToolMaterial;
+
+public class ModToolMaterials {
+
+    public static final ToolMaterial ALUMINUM = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_WOODEN_TOOL, 150, 2.0f, 0.0f, 15,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "aluminum_ingot"))
+    );
+
+    public static final ToolMaterial TIN = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_STONE_TOOL, 180, 4.0f, 1.0f, 5,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tin_ingot"))
+    );
+
+    public static final ToolMaterial CHROMIUM = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_STONE_TOOL, 220, 4.5f, 1.5f, 8,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "chromium_ingot"))
+    );
+
+    public static final ToolMaterial TITANIUM = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1600, 8.0f, 3.0f, 12,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "titanium_ingot"))
+    );
+
+    public static final ToolMaterial TUNGSTEN = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2500, 10.0f, 4.5f, 15,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tungsten_ingot"))
+    );
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\mixin\ExampleMixin.java
+// ============================================================
+package com.igoo.mixin;
+
+import net.minecraft.server.MinecraftServer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(MinecraftServer.class)
+public class ExampleMixin {
+	@Inject(at = @At("HEAD"), method = "loadLevel", remap = false)
+	private void init(CallbackInfo info) {
+		// This code is injected into the start of MinecraftServer.loadLevel()V
+	}
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\network\FakeClientConnection.java
+// ============================================================
+package com.igoo.network;
+
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.network.Connection;
+import net.minecraft.network.DisconnectionDetails;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.ProtocolInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+
+public class FakeClientConnection extends Connection {
+
+    public FakeClientConnection() {
+        super(PacketFlow.SERVERBOUND);
+    }
+
+    @Override public void channelActive(ChannelHandlerContext ctx) { }
+    @Override public void channelInactive(ChannelHandlerContext ctx) { }
+    @Override public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { }
+    @Override protected void channelRead0(ChannelHandlerContext ctx, Packet<?> packet) { }
+    @Override public void send(Packet<?> packet) { }
+    @Override public void send(Packet<?> packet, ChannelFutureListener listener) { }
+    @Override public void send(Packet<?> packet, ChannelFutureListener listener, boolean flush) { }
+    @Override public void flushChannel() { }
+    @Override public void disconnect(Component reason) { }
+    @Override public void disconnect(DisconnectionDetails details) { }
+    @Override public void setListenerForServerboundHandshake(PacketListener packetListener) { }
+    @Override public <T extends PacketListener> void setupInboundProtocol(ProtocolInfo<T> protocol, T packetListener) { }
+    @Override public void setupOutboundProtocol(ProtocolInfo<?> protocol) { }
+    @Override public void setReadOnly() { }
+    @Override public void setupCompression(int threshold, boolean validateDecompressed) { }
+    @Override public boolean isConnected() { return true; }
+    @Override public boolean isConnecting() { return false; }
+    @Override public boolean isMemoryConnection() { return true; }
+    @Override public void tick() { }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModBiomeModifications.java
+// ============================================================
+package com.igoo.worldgen;
+
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.world.level.levelgen.GenerationStep;
+
+public class ModBiomeModifications {
+
+    public static void register() {
+        // Quặng Mod
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.ALUMINUM_ORE_PLACED_KEY);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.TIN_ORE_PLACED_KEY);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CHROMIUM_ORE_PLACED_KEY);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.TITANIUM_ORE_PLACED_KEY);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.TUNGSTEN_ORE_PLACED_KEY);
+
+        // Quặng Vanilla
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_COAL_UPPER);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_COAL_LOWER);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_IRON_UPPER);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_IRON_MIDDLE);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_IRON_SMALL);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_COPPER);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_GOLD);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_REDSTONE);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_LAPIS);
+        
+        // Kim cương
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_DIAMOND_SMALL);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_DIAMOND_MEDIUM);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_DIAMOND_LARGE);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CURSED_ORE_DIAMOND_BURIED);
+
+        // Thảm thực vật
+        addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModWorldPlacedFeatures.CURSED_TREES_SAVANNA);
+        addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModWorldPlacedFeatures.CURSED_PATCH_TALL_GRASS);
+        addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModWorldPlacedFeatures.CURSED_PATCH_DEAD_BUSH);
+    }
+
+    private static void addFeature(GenerationStep.Decoration step, net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> key) {
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(ModBiomes.CURSED_SAVANNA),
+                step,
+                key
+        );
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModBiomes.java
+// ============================================================
+package com.igoo.worldgen;
+
+import com.igoo.Igoo;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+
+public class ModBiomes {
+    public static final ResourceKey<Biome> CURSED_SAVANNA = ResourceKey.create(
+            Registries.BIOME,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "cursed_savanna")
+    );
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModLootTables.java
+// ============================================================
+package com.igoo.worldgen;
+
+import com.igoo.Igoo;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.LootTable;
+
+public class ModLootTables {
+    public static final ResourceKey<LootTable> TRASH_HOME_CHEST = ResourceKey.create(
+            Registries.LOOT_TABLE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "chests/trash_home")
+    );
+
+    // 👇 Thêm key cho rương Herobrine Altar
+    public static final ResourceKey<LootTable> HEROBRINE_ALTAR_CHEST = ResourceKey.create(
+            Registries.LOOT_TABLE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "chests/herobrine_altar")
+    );
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModOverworldRegion.java
+// ============================================================
+package com.igoo.worldgen;
+
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
+import terrablender.api.Region;
+import terrablender.api.RegionType;
+import terrablender.api.Regions;
+
+import java.util.function.Consumer;
+
+public class ModOverworldRegion extends Region {
+
+    public ModOverworldRegion(Identifier name, int weight) {
+        super(name, RegionType.OVERWORLD, weight);
+    }
+
+    @Override
+    public void addBiomes(Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
+        // Chèn biome của bạn với khí hậu y hệt Savanna của Vanilla
+        this.addBiomeSimilar(mapper, net.minecraft.world.level.biome.Biomes.SAVANNA, ModBiomes.CURSED_SAVANNA);
+    }
+
+    public static void registerRegions() {
+        Regions.register(new ModOverworldRegion(Identifier.fromNamespaceAndPath("igoo", "overworld"), 10));
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModTerraBlenderAPI.java
+// ============================================================
+package com.igoo.worldgen;
+
+import terrablender.api.TerraBlenderApi;
+
+public class ModTerraBlenderAPI implements TerraBlenderApi {
+    @Override
+    public void onTerraBlenderInitialized() {
+        // Chỉ đăng ký Region, bỏ hoàn toàn Surface Rules
+        ModOverworldRegion.registerRegions();
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModWorldConfiguredFeatures.java
+// ============================================================
+package com.igoo.worldgen;
+
+import com.igoo.Igoo;
+import com.igoo.block.ModBlocks;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+
+import java.util.List;
+
+public class ModWorldConfiguredFeatures {
+
+    // Khai báo Key cho từng quặng
+    public static final ResourceKey<ConfiguredFeature<?, ?>> ALUMINUM_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("aluminum_ore"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> TIN_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("tin_ore"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CHROMIUM_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("chromium_ore"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> TITANIUM_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("titanium_ore"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> TUNGSTEN_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("tungsten_ore"));
+
+    public static void configure(BootstrapContext<ConfiguredFeature<?, ?>> context) {
+        // Quy tắc: Quặng có thể thay thế Đá (Stone) và Đá sâu (Deepslate)
+        var stoneReplaceable = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+
+        // --- Cấu hình cho Nhôm (Mạch 9 khối) ---
+        List<OreConfiguration.TargetBlockState> aluminumTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Aluminum_ore.defaultBlockState())
+        );
+        context.register(ALUMINUM_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(aluminumTargets, 9)));
+
+        // --- Cấu hình cho Thiếc (Mạch 8 khối) ---
+        List<OreConfiguration.TargetBlockState> tinTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Tin_ore.defaultBlockState())
+        );
+        context.register(TIN_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(tinTargets, 8)));
+
+        // --- Cấu hình cho Crom (Mạch 6 khối) ---
+        List<OreConfiguration.TargetBlockState> chromiumTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Chromium_ore.defaultBlockState())
+        );
+        context.register(CHROMIUM_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(chromiumTargets, 6)));
+
+        // --- Cấu hình cho Titan (Mạch 5 khối) ---
+        List<OreConfiguration.TargetBlockState> titaniumTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Titanium_ore.defaultBlockState())
+        );
+        context.register(TITANIUM_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(titaniumTargets, 5)));
+
+        // --- Cấu hình cho Vonfram (Mạch 4 khối) ---
+        List<OreConfiguration.TargetBlockState> tungstenTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Tungsten_ore.defaultBlockState())
+        );
+        context.register(TUNGSTEN_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(tungstenTargets, 4)));
+    }
+}.
+.
+// ============================================================
+// FILE: src\main\java\com\igoo\worldgen\ModWorldPlacedFeatures.java
+// ============================================================
+package com.igoo.worldgen;
+
+import com.igoo.Igoo;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.data.worldgen.features.VegetationFeatures;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
+import net.minecraft.world.level.levelgen.placement.*;
+
+import java.util.List;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
+
+public class ModWorldPlacedFeatures {
+
+    // ===== 1. Key quặng của Mod =====
+    public static final ResourceKey<PlacedFeature> ALUMINUM_ORE_PLACED_KEY = key("aluminum_ore_placed");
+    public static final ResourceKey<PlacedFeature> TIN_ORE_PLACED_KEY = key("tin_ore_placed");
+    public static final ResourceKey<PlacedFeature> CHROMIUM_ORE_PLACED_KEY = key("chromium_ore_placed");
+    public static final ResourceKey<PlacedFeature> TITANIUM_ORE_PLACED_KEY = key("titanium_ore_placed");
+    public static final ResourceKey<PlacedFeature> TUNGSTEN_ORE_PLACED_KEY = key("tungsten_ore_placed");
+
+    // ===== 2. Key quặng Vanilla =====
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_COAL_UPPER = key("cursed_ore_coal_upper");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_COAL_LOWER = key("cursed_ore_coal_lower");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_IRON_UPPER = key("cursed_ore_iron_upper");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_IRON_MIDDLE = key("cursed_ore_iron_middle");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_IRON_SMALL = key("cursed_ore_iron_small");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_COPPER = key("cursed_ore_copper");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_GOLD = key("cursed_ore_gold");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_REDSTONE = key("cursed_ore_redstone");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_LAPIS = key("cursed_ore_lapis");
+    
+    // Biến thể Kim Cương
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_DIAMOND_SMALL = key("cursed_ore_diamond_small");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_DIAMOND_MEDIUM = key("cursed_ore_diamond_medium");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_DIAMOND_LARGE = key("cursed_ore_diamond_large");
+    public static final ResourceKey<PlacedFeature> CURSED_ORE_DIAMOND_BURIED = key("cursed_ore_diamond_buried");
+
+    // ===== 3. Key thảm thực vật =====
+    public static final ResourceKey<PlacedFeature> CURSED_TREES_SAVANNA = key("cursed_trees_savanna");
+    public static final ResourceKey<PlacedFeature> CURSED_PATCH_TALL_GRASS = key("cursed_patch_tall_grass");
+    public static final ResourceKey<PlacedFeature> CURSED_PATCH_DEAD_BUSH = key("cursed_patch_dead_bush");
+
+    private static ResourceKey<PlacedFeature> key(String name) {
+        return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name));
+    }
+
+    public static void configure(BootstrapContext<PlacedFeature> context) {
+        var cf = context.lookup(Registries.CONFIGURED_FEATURE);
+
+        // ==========================================
+        // A. QUẶNG CỦA MOD
+        // ==========================================
+        registerOre(context, cf, ALUMINUM_ORE_PLACED_KEY, ModWorldConfiguredFeatures.ALUMINUM_ORE_KEY, 12, 48, 128);
+        registerOre(context, cf, TIN_ORE_PLACED_KEY, ModWorldConfiguredFeatures.TIN_ORE_KEY, 10, 24, 96);
+        registerOre(context, cf, CHROMIUM_ORE_PLACED_KEY, ModWorldConfiguredFeatures.CHROMIUM_ORE_KEY, 6, 8, 48);
+        registerOre(context, cf, TITANIUM_ORE_PLACED_KEY, ModWorldConfiguredFeatures.TITANIUM_ORE_KEY, 6, 4, 24);
+        registerOre(context, cf, TUNGSTEN_ORE_PLACED_KEY, ModWorldConfiguredFeatures.TUNGSTEN_ORE_KEY, 6, 0, 128);
+
+        // ==========================================
+        // B. QUẶNG VANILLA (Clone)
+        // ==========================================
+        
+        // Than (Coal)
+        context.register(CURSED_ORE_COAL_UPPER, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_COAL), 
+            List.of(CountPlacement.of(30), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(136), VerticalAnchor.top()), BiomeFilter.biome())));
+        context.register(CURSED_ORE_COAL_LOWER, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_COAL_BURIED), 
+            List.of(CountPlacement.of(20), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(0), VerticalAnchor.absolute(192)), BiomeFilter.biome())));
+
+        // Sắt (Iron)
+        context.register(CURSED_ORE_IRON_UPPER, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_IRON), 
+            List.of(CountPlacement.of(90), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(80), VerticalAnchor.absolute(384)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_IRON_MIDDLE, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_IRON), 
+            List.of(CountPlacement.of(10), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-24), VerticalAnchor.absolute(56)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_IRON_SMALL, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_IRON_SMALL), 
+            List.of(CountPlacement.of(10), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(72)), BiomeFilter.biome())));
+
+        // Đồng, Vàng, Đá đỏ, Lapis
+        context.register(CURSED_ORE_COPPER, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_COPPER_LARGE), 
+            List.of(CountPlacement.of(16), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(112)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_GOLD, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_GOLD), 
+            List.of(CountPlacement.of(4), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(32)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_REDSTONE, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_REDSTONE), 
+            List.of(CountPlacement.of(8), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-32), VerticalAnchor.absolute(32)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_LAPIS, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_LAPIS), 
+            List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-32), VerticalAnchor.absolute(32)), BiomeFilter.biome())));
+
+        // Kim cương (Diamond) - Đầy đủ 4 biến thể
+        context.register(CURSED_ORE_DIAMOND_SMALL, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_DIAMOND_SMALL), 
+            List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_DIAMOND_MEDIUM, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_DIAMOND_MEDIUM), 
+            List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-4)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_DIAMOND_LARGE, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_DIAMOND_LARGE), 
+            List.of(RarityFilter.onAverageOnceEvery(9), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)), BiomeFilter.biome())));
+        context.register(CURSED_ORE_DIAMOND_BURIED, new PlacedFeature(cf.getOrThrow(OreFeatures.ORE_DIAMOND_BURIED), 
+            List.of(CountPlacement.of(4), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)), BiomeFilter.biome())));
+
+        // ==========================================
+        // C. THẢM THỰC VẬT (Đã sửa lỗi không mọc)
+        // ==========================================
+        
+        // Cây Savanna (Cần HEIGHTMAP và BlockPredicate để mọc trên đất/cỏ)
+        context.register(CURSED_TREES_SAVANNA, new PlacedFeature(
+                cf.getOrThrow(VegetationFeatures.TREES_SAVANNA),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(4),
+                        CountPlacement.of(1),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome()
+                )
+        ));
+
+        // Cỏ dại (Cần HEIGHTMAP)
+        context.register(CURSED_PATCH_TALL_GRASS, new PlacedFeature(
+                cf.getOrThrow(VegetationFeatures.TALL_GRASS),
+                List.of(
+                        CountPlacement.of(10), 
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP, // 👈 Tìm bề mặt
+                        BiomeFilter.biome()
+                )
+        ));
+
+        // Bụi cây chết (Cần HEIGHTMAP)
+        context.register(CURSED_PATCH_DEAD_BUSH, new PlacedFeature(
+                cf.getOrThrow(VegetationFeatures.DEAD_BUSH),
+                List.of(
+                        CountPlacement.of(4), 
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome()
+                )
+        ));
+    }
+
+    private static void registerOre(BootstrapContext<PlacedFeature> context, HolderGetter<ConfiguredFeature<?, ?>> cf,
+                                    ResourceKey<PlacedFeature> placedKey, ResourceKey<ConfiguredFeature<?, ?>> configuredKey,
+                                    int count, int minY, int maxY) {
+        var height = TrapezoidHeight.of(VerticalAnchor.absolute(minY), VerticalAnchor.absolute(maxY));
+        var modifiers = List.of(
+                CountPlacement.of(count),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.of(height),
+                BiomeFilter.biome()
+        );
+        context.register(placedKey, new PlacedFeature(cf.getOrThrow(configuredKey), modifiers));
+    }
+}

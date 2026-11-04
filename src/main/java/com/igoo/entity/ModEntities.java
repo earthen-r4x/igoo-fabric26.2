@@ -21,12 +21,11 @@ public class ModEntities {
             BuiltInRegistries.ENTITY_TYPE,
             HEROBRINE_KEY,
             EntityType.Builder.<HerobrineBoss>of(HerobrineBoss::new, MobCategory.MONSTER)
-                    .sized(0.6F, 1.8F) // Kích thước giống người chơi
+                    .sized(0.6F, 1.8F)
                     .clientTrackingRange(10)
                     .build(HEROBRINE_KEY)
     );
-    
-    // Thêm Key và Entity cho Cursed Herobrine
+
     public static final ResourceKey<EntityType<?>> CURSED_HEROBRINE_KEY = ResourceKey.create(
             Registries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "cursed_herobrine")
@@ -40,11 +39,25 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .build(CURSED_HEROBRINE_KEY)
     );
+    
+    public static final ResourceKey<EntityType<?>> BABY_BAT_KEY = ResourceKey.create(
+            Registries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "baby_bat")
+    );
+
+    public static final EntityType<BabyBat> BABY_BAT = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            BABY_BAT_KEY,
+            EntityType.Builder.<BabyBat>of(BabyBat::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(10)
+                    .build(BABY_BAT_KEY)
+    );
 
     public static void registerModEntities() {
         Igoo.LOGGER.info("Registering Entities for " + Igoo.MOD_ID);
-        // Đăng ký thuộc tính cho entity
         FabricDefaultAttributeRegistry.register(HEROBRINE, HerobrineBoss.createHerobrineAttributes());
         FabricDefaultAttributeRegistry.register(CURSED_HEROBRINE, CursedHerobrineBoss.createCursedAttributes());
+        FabricDefaultAttributeRegistry.register(BABY_BAT, BabyBat.createAttributes());
     }
 }

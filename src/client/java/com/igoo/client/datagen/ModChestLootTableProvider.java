@@ -32,18 +32,13 @@ public class ModChestLootTableProvider extends SimpleFabricLootTableSubProvider 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         
-        // ==========================================
-        // 1. RƯƠNG TRASH HOME (Cũ)
-        // ==========================================
         consumer.accept(ModLootTables.TRASH_HOME_CHEST, LootTable.lootTable()
-                // 10% ra 1-5 iron_ingot
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .when(LootItemRandomChanceCondition.randomChance(0.80F))
                         .add(LootItem.lootTableItem(Items.IRON_INGOT)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 5.0F))))
                 )
-                // 20% ra 1-3 ingot mod
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .when(LootItemRandomChanceCondition.randomChance(1.0F))
@@ -52,13 +47,11 @@ public class ModChestLootTableProvider extends SimpleFabricLootTableSubProvider 
                         .add(LootItem.lootTableItem(ModItems.Titanium_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
                         .add(LootItem.lootTableItem(ModItems.Tungsten_ingot).apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F))))
                 )
-                // 100% ra 1-5 bánh mì pháp
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(ModItems.Baguette)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 5.0F))))
                 )
-                // 1% ra 1 titanium_alloy_block
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .when(LootItemRandomChanceCondition.randomChance(0.01F))
@@ -67,23 +60,17 @@ public class ModChestLootTableProvider extends SimpleFabricLootTableSubProvider 
         );
 
 
-        // ==========================================
-        // 2. RƯƠNG HEROBRINE ALTAR (Mới)
-        // ==========================================
         consumer.accept(ModLootTables.HEROBRINE_ALTAR_CHEST, LootTable.lootTable()
-                // 100% ra 1 khối vàng
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(Items.GOLD_BLOCK))
                 )
-                // 50% ra 8-20 xương
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .when(LootItemRandomChanceCondition.randomChance(0.50F))
                         .add(LootItem.lootTableItem(Items.BONE)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 20.0F))))
                 )
-                // 50% ra loot của End City
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .when(LootItemRandomChanceCondition.randomChance(0.5F))

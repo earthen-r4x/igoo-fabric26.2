@@ -80,11 +80,11 @@ public class HerobrineBoss extends PathfinderMob {
     public void aiStep() {
         super.aiStep();
         
-        // 1. Cập nhật thanh tiến trình (độ dài của thanh máu)
+        // Cập nhật thanh tiến trình (độ dài của thanh máu)
         float healthRatio = this.getHealth() / this.getMaxHealth();
         this.bossBar.setProgress(healthRatio);
 
-        // 2. Tự động đổi màu thanh máu dựa trên % máu
+        // Tự động đổi màu thanh máu dựa trên % máu
         if (healthRatio > 0.66F) {
             // Trên 66% máu: Màu Xanh Lá (Khỏe mạnh)
             this.bossBar.setColor(BossEvent.BossBarColor.GREEN);
@@ -96,7 +96,7 @@ public class HerobrineBoss extends PathfinderMob {
             this.bossBar.setColor(BossEvent.BossBarColor.RED);
         }
 
-        // 3. Logic kỹ năng
+        // Logic kỹ năng
         if (!this.level().isClientSide() && this.isAlive()) {
             LivingEntity target = this.getTarget();
             
@@ -112,7 +112,6 @@ public class HerobrineBoss extends PathfinderMob {
     }
 
     private void useRandomSkill(LivingEntity target) {
-        // Tăng lên 5 kỹ năng (từ 0 đến 4)
         int skill = this.getRandom().nextInt(5);
         switch (skill) {
             case 0 -> teleportBehindTarget(target);
@@ -131,9 +130,6 @@ public class HerobrineBoss extends PathfinderMob {
         }
     }
 
-    // ==========================================
-    // KỸ NĂNG 1: DỊCH CHUYỂN TỨC THỜI
-    // ==========================================
     private void teleportBehindTarget(LivingEntity target) {
         sendBossMessage(target, "message.igoo.herobrine.skill.teleport");
         
@@ -156,9 +152,6 @@ public class HerobrineBoss extends PathfinderMob {
         }
     }
 
-    // ==========================================
-    // KỸ NĂNG 2: TRIỆU HỒI SẤM SÉT
-    // ==========================================
     private void summonLightning(LivingEntity target) {
         sendBossMessage(target, "message.igoo.herobrine.skill.lightning");
         
@@ -171,9 +164,6 @@ public class HerobrineBoss extends PathfinderMob {
         }
     }
 
-    // ==========================================
-    // KỸ NĂNG 3: LỜI NGUYỀN BÓNG TỐI
-    // ==========================================
     private void curseOfDarkness(LivingEntity target) {
         sendBossMessage(target, "message.igoo.herobrine.skill.curse");
         
@@ -188,17 +178,13 @@ public class HerobrineBoss extends PathfinderMob {
         }
     }
 
-    // ==========================================
-    // KỸ NĂNG 4: TRIỆU HỒI QUÂN ĐOÀN XÁC SỐNG
-    // ==========================================
     private void summonUndead(LivingEntity target) {
         sendBossMessage(target, "message.igoo.herobrine.skill.undead");
         
         if (this.level() instanceof ServerLevel serverLevel) {
             this.level().playSound(null, this.blockPosition(), SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.HOSTILE, 1.0f, 0.5f);
             
-            // Triệu hồi 2-3 con Zombie xung quanh Herobrine
-            int count = this.getRandom().nextInt(2) + 2; // 2 hoặc 3 con
+            int count = this.getRandom().nextInt(2) + 2;
             for (int i = 0; i < count; i++) {
                 double dx = this.getRandom().nextDouble() * 4 - 2;
                 double dz = this.getRandom().nextDouble() * 4 - 2;
@@ -215,9 +201,6 @@ public class HerobrineBoss extends PathfinderMob {
         }
     }
 
-    // ==========================================
-    // KỸ NĂNG 5: SÓNG XUNG KÍCH ĐẨY LÙI (FEAR)
-    // ==========================================
     private void fearKnockback(LivingEntity target) {
         sendBossMessage(target, "message.igoo.herobrine.skill.fear");
         
@@ -262,7 +245,6 @@ public class HerobrineBoss extends PathfinderMob {
                 );
             }
             
-            // (Tùy chọn) Phát âm thanh chiến thắng
             this.level().playSound(null, this.blockPosition(), net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, net.minecraft.sounds.SoundSource.MASTER, 1.0f, 1.0f);
         }
     }

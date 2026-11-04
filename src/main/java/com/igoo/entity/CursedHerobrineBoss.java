@@ -10,10 +10,10 @@ public class CursedHerobrineBoss extends HerobrineBoss {
 
     public CursedHerobrineBoss(EntityType<? extends HerobrineBoss> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 10000; // Kinh nghiệm rơi ra gấp 10 lần
+        this.xpReward = 10000;
     }
 
-    // Ghi đè lại chỉ số, buff gấp 10 lần
+    // Ghi đè
     public static AttributeSupplier.Builder createCursedAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 2500.0D)

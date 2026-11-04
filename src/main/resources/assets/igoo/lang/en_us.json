@@ -85,5 +85,6 @@
     "entity.igoo.cursed_herobrine": "Cursed Herobrine",
     "message.igoo.herobrine.cursed_summoned": "§4§lYou have summoned me on cursed soil...",
     "message.igoo.boss.defeated": "%s has defeated %s!",
-    "message.igoo.boss.defeated_unknown": "%s has been defeated!"
+    "message.igoo.boss.defeated_unknown": "%s has been defeated!",
+    "entity.igoo.baby_bat": "BabyVampireBat"
 }

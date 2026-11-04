@@ -8,6 +8,7 @@ import com.igoo.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -23,7 +24,6 @@ public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        // 1. Gắn công cụ vào tag tương ứng của Vanilla
         builder(ItemTags.SWORDS).add(
             key(ModItems.Aluminum_sword), key(ModItems.Tin_sword), key(ModItems.Chromium_sword), key(ModItems.Titanium_sword), key(ModItems.Tungsten_sword)
         );
@@ -40,7 +40,6 @@ public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
             key(ModItems.Aluminum_hoe), key(ModItems.Tin_hoe), key(ModItems.Chromium_hoe), key(ModItems.Titanium_hoe), key(ModItems.Tungsten_hoe)
         );
 
-        // 2. Đăng ký tag sửa chữa (Repair) cho từng kim loại
         addRepairTag("aluminum_ingot", ModItems.Aluminum_ingot);
         addRepairTag("tin_ingot", ModItems.Tin_ingot);
         addRepairTag("chromium_ingot", ModItems.Chromium_ingot);
@@ -53,8 +52,7 @@ public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
         builder(tag).add(key(item));
     }
 
-    /** Helper: Chuyển đổi Item thành ResourceKey<Item> cho API 26.2 */
     private static ResourceKey<Item> key(Item item) {
-        return item.builtInRegistryHolder().key();
+        return BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow();
     }
 }

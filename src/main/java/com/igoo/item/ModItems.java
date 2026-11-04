@@ -26,21 +26,21 @@ public class ModItems {
 //    ==================================== Ingots ==============================================
     // Ingot
     public static final Item Aluminum_ingot = registerItem("aluminum_ingot", Item::new);
-    public static final Item Bronze_ingot = registerItem("bronze_ingot", Item:: new);
-    public static final Item Carbon_steel_ingot = registerItem("carbon_steel_ingot", Item:: new);
-    public static final Item Chromium_ingot = registerItem("chromium_ingot", Item:: new);
-    public static final Item Stainless_steel_ingot = registerItem("stainless_steel_ingot", Item:: new);
-    public static final Item Tin_ingot = registerItem("tin_ingot", Item:: new);
-    public static final Item Titanium_alloy = registerItem("titanium_alloy", Item:: new);
-    public static final Item Titanium_ingot = registerItem("titanium_ingot", Item:: new);
-    public static final Item Tungsten_carbide_ingot = registerItem("tungsten_carbide_ingot", Item:: new);
-    public static final Item Tungsten_ingot = registerItem("tungsten_ingot", Item:: new);
+    public static final Item Bronze_ingot = registerItem("bronze_ingot", Item::new);
+    public static final Item Carbon_steel_ingot = registerItem("carbon_steel_ingot", Item::new);
+    public static final Item Chromium_ingot = registerItem("chromium_ingot", Item::new);
+    public static final Item Stainless_steel_ingot = registerItem("stainless_steel_ingot", Item::new);
+    public static final Item Tin_ingot = registerItem("tin_ingot", Item::new);
+    public static final Item Titanium_alloy = registerItem("titanium_alloy", Item::new);
+    public static final Item Titanium_ingot = registerItem("titanium_ingot", Item::new);
+    public static final Item Tungsten_carbide_ingot = registerItem("tungsten_carbide_ingot", Item::new);
+    public static final Item Tungsten_ingot = registerItem("tungsten_ingot", Item::new);
     //  Raw
-    public static final Item Raw_aluminum = registerItem("raw_aluminum", Item:: new);
-    public static final Item Raw_chromium = registerItem("raw_chromium", Item:: new);
-    public static final Item Raw_tin = registerItem("raw_tin", Item:: new);
-    public static final Item Raw_titanium = registerItem("raw_titanium", Item:: new);
-    public static final Item Raw_tungsten = registerItem("raw_tungsten", Item:: new);
+    public static final Item Raw_aluminum = registerItem("raw_aluminum", Item::new);
+    public static final Item Raw_chromium = registerItem("raw_chromium", Item::new);
+    public static final Item Raw_tin = registerItem("raw_tin", Item::new);
+    public static final Item Raw_titanium = registerItem("raw_titanium", Item::new);
+    public static final Item Raw_tungsten = registerItem("raw_tungsten", Item::new);
     
     // List
     public static final List<Item> ALL_INGOTS = List.of(
@@ -151,7 +151,7 @@ public class ModItems {
     public static final Item Cheese_slice        = registerItem("cheese_slice", p -> new Item(p.food(CHEESE_SLICE_FOOD, FAST_FOOD)));
     
     public static final List<Item> ALL_FOODS = List.of(Chicken_wing, Chicken_wing_cooked, Pork, Pork_cooked, Baguette, Cheese_full, Cheese_slice);
-    
+
     public static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name),
         function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, name)))));

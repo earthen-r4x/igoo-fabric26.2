@@ -83,5 +83,6 @@
     "entity.igoo.cursed_herobrine": "Herobrine Bị Nguyền Rủa",
     "message.igoo.herobrine.cursed_summoned": "§4§lNgươi đã triệu hồi ta tại mảnh đất bị nguyền rủa...",
     "message.igoo.boss.defeated": "%s đã đánh bại %s!",
-    "message.igoo.boss.defeated_unknown": "%s đã bị đánh bại!"
+    "message.igoo.boss.defeated_unknown": "%s đã bị đánh bại!",
+    "entity.igoo.baby_bat": "BabyVampireBat"
 }

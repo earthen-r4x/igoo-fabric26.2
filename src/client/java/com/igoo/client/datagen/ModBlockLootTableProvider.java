@@ -29,6 +29,12 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
     @Override
     public void generate() {
         ModBlocks.ALL_METALS.forEach(this::dropSelf);
+        ModBlocks.ALL_ORES.forEach(ore -> {
+            var drop = ModBlocks.ORE_DROPS.get(ore);
+            if (drop != null) {
+                add(ore, createMultipleOreDrops(ore, drop.raw(), drop.min(), drop.max()));
+            }
+        });
     }
 
     public LootTable.Builder createMultipleOreDrops(Block block, Item item, float minDrops, float maxDrops) {
