@@ -27,6 +27,10 @@ public class ModBlocks {
         properties -> new Block(properties.strength(3.0f, 6.0f)
         .requiresCorrectToolForDrops().sound(SoundType.STONE))
     );
+    public static final Block Azurite_block = registerBlock("azurite_block",
+        properties -> new Block(properties.strength(6.0f, 14.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.AMETHYST))
+    );
     public static final Block Bronze_block = registerBlock("bronze_block",
         properties -> new Block(properties.strength(4.0f, 8.0f)
         .requiresCorrectToolForDrops().sound(SoundType.STONE))
@@ -70,6 +74,16 @@ public class ModBlocks {
         properties.strength(2.8f, 5.0f)
         .requiresCorrectToolForDrops().sound(SoundType.STONE))
     );
+    public static final Block Azurite_ore = registerBlock("azurite_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(3, 7),
+        properties.strength(5.0f, 10.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.STONE))
+    );
+    public static final Block Deepslate_azurite_ore = registerBlock("deepslate_azurite_ore",
+        properties -> new DropExperienceBlock(UniformInt.of(3, 7),
+        properties.strength(7.5f, 10.0f)
+        .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE))
+    );
     public static final Block Chromium_ore = registerBlock("chromium_ore",
         properties -> new DropExperienceBlock(UniformInt.of(2, 5),
         properties.strength(4.0f, 8.0f)
@@ -93,6 +107,7 @@ public class ModBlocks {
     
     public static final List<Block> ALL_METALS = List.of(
         Aluminum_block,
+        Azurite_block,
         Bronze_block,
         Carbon_steel_block,
         Chromium_block,
@@ -106,6 +121,8 @@ public class ModBlocks {
     
     public static final List<Block> ALL_ORES = List.of(
         Aluminum_ore,
+        Azurite_ore,
+        Deepslate_azurite_ore,
         Chromium_ore,
         Tin_ore,
         Titanium_ore,
@@ -125,7 +142,10 @@ public class ModBlocks {
 
     // Yêu cầu cuốcchim sắt trở lên
     public static final List<Block> MINE_WITH_IRON = List.of(
-        Stainless_steel_block
+        Stainless_steel_block,
+        Azurite_block,
+        Azurite_ore,
+        Deepslate_azurite_ore
     );
 
     // Yêu cầu cuốc chim kim cương trở lên

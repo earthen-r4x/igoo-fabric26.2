@@ -1,10 +1,13 @@
 // 26.2	-999999999-01-01T00:00:00	igoo/Block Loot Tables
 b7dddae0d61ab5a7bdff6af0000270c348a64497 data/igoo/loot_table/blocks/aluminum_block.json
 f0fdc062937abeaefa5ce5c90a56852b8da7d7d7 data/igoo/loot_table/blocks/aluminum_ore.json
+4de25f2db5525bf360dd4b1984206b5b5169da6e data/igoo/loot_table/blocks/azurite_block.json
+9f3dc6a7eecc02dcb7992898eec5e5e973afa61c data/igoo/loot_table/blocks/azurite_ore.json
 76982e5eca0b7504b644ade578fa1831b7f5d042 data/igoo/loot_table/blocks/bronze_block.json
 45c7bd2ed48269d57ea4bf3cb5ebd8691e62bbdb data/igoo/loot_table/blocks/carbon_steel_block.json
 23ec54ac2ef080a22a8b856b7a2d9181eb3d6698 data/igoo/loot_table/blocks/chromium_block.json
 26099622cd11d5c12c18351ccfb1eebc361a438e data/igoo/loot_table/blocks/chromium_ore.json
+bb97d58a2ae4dd4fbf721b91ea879198ce85da0d data/igoo/loot_table/blocks/deepslate_azurite_ore.json
 db950c764d9c0b1da05e261112310f7f61d1e09b data/igoo/loot_table/blocks/stainless_steel_block.json
 633ab6f7ef8d6d3f156596f72da68cf6b782e3f3 data/igoo/loot_table/blocks/tin_block.json
 9dd240447bc4ee4bd51676e8c0cdeb0318aab027 data/igoo/loot_table/blocks/tin_ore.json

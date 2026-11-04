@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "minecraft:leather",
+    "X": "igoo:azurite_ingot"
+  },
+  "pattern": [
+    "  X",
+    "XLX",
+    "XXX"
+  ],
+  "result": {
+    "id": "igoo:azurite_horse_armor"
+  }
+}

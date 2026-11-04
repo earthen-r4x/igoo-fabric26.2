@@ -19,6 +19,8 @@ public class ModWorldConfiguredFeatures {
     // Khai báo Key cho từng quặng
     public static final ResourceKey<ConfiguredFeature<?, ?>> ALUMINUM_ORE_KEY = ResourceKey.create(
             Registries.CONFIGURED_FEATURE, Igoo.id("aluminum_ore"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> AZURITE_ORE_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE, Igoo.id("azurite_ore"));
     public static final ResourceKey<ConfiguredFeature<?, ?>> TIN_ORE_KEY = ResourceKey.create(
             Registries.CONFIGURED_FEATURE, Igoo.id("tin_ore"));
     public static final ResourceKey<ConfiguredFeature<?, ?>> CHROMIUM_ORE_KEY = ResourceKey.create(
@@ -37,6 +39,14 @@ public class ModWorldConfiguredFeatures {
                 OreConfiguration.target(stoneReplaceable, ModBlocks.Aluminum_ore.defaultBlockState())
         );
         context.register(ALUMINUM_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(aluminumTargets, 9)));
+
+        // --- Cấu hình cho Azurite (Mạch 5 khối, có cả biến thể đá sâu) ---
+        var deepslateReplaceable = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        List<OreConfiguration.TargetBlockState> azuriteTargets = List.of(
+                OreConfiguration.target(stoneReplaceable, ModBlocks.Azurite_ore.defaultBlockState()),
+                OreConfiguration.target(deepslateReplaceable, ModBlocks.Deepslate_azurite_ore.defaultBlockState())
+        );
+        context.register(AZURITE_ORE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(azuriteTargets, 5)));
 
         // --- Cấu hình cho Thiếc (Mạch 8 khối) ---
         List<OreConfiguration.TargetBlockState> tinTargets = List.of(

@@ -23,6 +23,7 @@ public class ModModelProvider extends FabricModelProvider {
         ModItems.ALL_ITEMS.forEach(item -> itemModelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM));
         ModItems.ALL_FOODS.forEach(food -> itemModelGenerator.generateFlatItem(food, ModelTemplates.FLAT_HANDHELD_ITEM));
         ModItems.ALL_TOOLS.forEach(tool -> itemModelGenerator.generateFlatItem(tool, ModelTemplates.FLAT_HANDHELD_ITEM));
+        ModItems.ALL_ARMORS.forEach(armor -> itemModelGenerator.generateFlatItem(armor, ModelTemplates.FLAT_ITEM));
         itemModelGenerator.generateFlatItem(ModItems.Herobrine_spawn_egg, ModelTemplates.FLAT_ITEM);
     }
 }

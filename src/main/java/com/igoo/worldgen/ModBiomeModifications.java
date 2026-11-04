@@ -9,6 +9,7 @@ public class ModBiomeModifications {
     public static void register() {
         // Quặng Mod
         addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.ALUMINUM_ORE_PLACED_KEY);
+        addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.AZURITE_ORE_PLACED_KEY);
         addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.TIN_ORE_PLACED_KEY);
         addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.CHROMIUM_ORE_PLACED_KEY);
         addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModWorldPlacedFeatures.TITANIUM_ORE_PLACED_KEY);

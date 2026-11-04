@@ -30,6 +30,17 @@ public class ModToolMaterials {
             TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "titanium_ingot"))
     );
 
+    public static final ToolMaterial AZURITE = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1800, 8.5f, 3.5f, 18,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "azurite_ingot"))
+    );
+
+    /** Dolabra: bản nâng cấp từ cuốc chim kim cương, mạnh hơn bộ công cụ Azurite thường. */
+    public static final ToolMaterial AZURITE_DOLABRA = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2600, 10.0f, 4.5f, 18,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "azurite_ingot"))
+    );
+
     public static final ToolMaterial TUNGSTEN = new ToolMaterial(
             BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2500, 10.0f, 4.5f, 15,
             TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tungsten_ingot"))

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_azurite_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "igoo:azurite_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "igoo:azurite_horse_armor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_azurite_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "igoo:azurite_horse_armor"
+    ]
+  }
+}

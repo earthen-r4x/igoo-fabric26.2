@@ -33,6 +33,8 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
             var drop = ModBlocks.ORE_DROPS.get(ore);
             if (drop != null) {
                 add(ore, createMultipleOreDrops(ore, drop.raw(), drop.min(), drop.max()));
+            } else {
+                dropSelf(ore);
             }
         });
     }

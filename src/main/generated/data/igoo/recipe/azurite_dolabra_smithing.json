@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "igoo:azurite_ingot",
+  "base": "minecraft:diamond_pickaxe",
+  "result": {
+    "id": "igoo:azurite_dolabra"
+  },
+  "template": "minecraft:netherite_upgrade_smithing_template"
+}

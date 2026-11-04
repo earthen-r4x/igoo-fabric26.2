@@ -1,5 +1,8 @@
 {
   "values": [
-    "igoo:stainless_steel_block"
+    "igoo:azurite_block",
+    "igoo:stainless_steel_block",
+    "igoo:azurite_ore",
+    "igoo:deepslate_azurite_ore"
   ]
 }

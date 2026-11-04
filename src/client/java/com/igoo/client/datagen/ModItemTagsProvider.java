@@ -24,23 +24,26 @@ public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
+        // 1. Gắn công cụ vào tag tương ứng của Vanilla
         builder(ItemTags.SWORDS).add(
-            key(ModItems.Aluminum_sword), key(ModItems.Tin_sword), key(ModItems.Chromium_sword), key(ModItems.Titanium_sword), key(ModItems.Tungsten_sword)
+            key(ModItems.Azurite_sword), key(ModItems.Aluminum_sword), key(ModItems.Tin_sword), key(ModItems.Chromium_sword), key(ModItems.Titanium_sword), key(ModItems.Tungsten_sword)
         );
         builder(ItemTags.PICKAXES).add(
-            key(ModItems.Aluminum_pickaxe), key(ModItems.Tin_pickaxe), key(ModItems.Chromium_pickaxe), key(ModItems.Titanium_pickaxe), key(ModItems.Tungsten_pickaxe)
+            key(ModItems.Azurite_pickaxe), key(ModItems.Azurite_dolabra), key(ModItems.Aluminum_pickaxe), key(ModItems.Tin_pickaxe), key(ModItems.Chromium_pickaxe), key(ModItems.Titanium_pickaxe), key(ModItems.Tungsten_pickaxe)
         );
         builder(ItemTags.AXES).add(
-            key(ModItems.Aluminum_axe), key(ModItems.Tin_axe), key(ModItems.Chromium_axe), key(ModItems.Titanium_axe), key(ModItems.Tungsten_axe)
+            key(ModItems.Azurite_axe), key(ModItems.Azurite_mattock), key(ModItems.Aluminum_axe), key(ModItems.Tin_axe), key(ModItems.Chromium_axe), key(ModItems.Titanium_axe), key(ModItems.Tungsten_axe)
         );
         builder(ItemTags.SHOVELS).add(
-            key(ModItems.Aluminum_shovel), key(ModItems.Tin_shovel), key(ModItems.Chromium_shovel), key(ModItems.Titanium_shovel), key(ModItems.Tungsten_shovel)
+            key(ModItems.Azurite_shovel), key(ModItems.Azurite_mattock), key(ModItems.Aluminum_shovel), key(ModItems.Tin_shovel), key(ModItems.Chromium_shovel), key(ModItems.Titanium_shovel), key(ModItems.Tungsten_shovel)
         );
         builder(ItemTags.HOES).add(
-            key(ModItems.Aluminum_hoe), key(ModItems.Tin_hoe), key(ModItems.Chromium_hoe), key(ModItems.Titanium_hoe), key(ModItems.Tungsten_hoe)
+            key(ModItems.Azurite_hoe), key(ModItems.Azurite_mattock), key(ModItems.Aluminum_hoe), key(ModItems.Tin_hoe), key(ModItems.Chromium_hoe), key(ModItems.Titanium_hoe), key(ModItems.Tungsten_hoe)
         );
 
+        // 2. Đăng ký tag sửa chữa (Repair) cho từng kim loại
         addRepairTag("aluminum_ingot", ModItems.Aluminum_ingot);
+        addRepairTag("azurite_ingot", ModItems.Azurite_ingot);
         addRepairTag("tin_ingot", ModItems.Tin_ingot);
         addRepairTag("chromium_ingot", ModItems.Chromium_ingot);
         addRepairTag("titanium_ingot", ModItems.Titanium_ingot);
@@ -52,6 +55,7 @@ public class ModItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
         builder(tag).add(key(item));
     }
 
+    /** Helper: Chuyển đổi Item thành ResourceKey<Item> cho API 26.2 */
     private static ResourceKey<Item> key(Item item) {
         return BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow();
     }

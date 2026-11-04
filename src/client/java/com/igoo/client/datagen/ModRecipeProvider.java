@@ -14,11 +14,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+// import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ItemLike;
@@ -35,26 +38,38 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         return new RecipeProvider(registries, output) {
             
+            // 👇 KHAI BÁO HÀM COOKFOOD Ở ĐÂY (Ngoài buildRecipes)
             private void cookFood(List<ItemLike> inputs, ItemLike result, String groupName) {
-                oreCooking(SmeltingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, result, 0.35f, 200, groupName, "_from_smelting");
-                oreCooking(SmokingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, result, 0.35f, 100, groupName, "_from_smoking");
-                oreCooking(CampfireCookingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, result, 0.35f, 600, groupName, "_from_campfire_cooking");
+                // 1. Smelting
+                oreCooking(SmeltingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 200, groupName, "_from_smelting");
+                // 2. Smoking
+                oreCooking(SmokingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 100, groupName, "_from_smoking");
+                // 3. Campfire
+                oreCooking(CampfireCookingRecipe::new, inputs, RecipeCategory.FOOD, CookingBookCategory.FOOD, 
+                           result, 0.35f, 600, groupName, "_from_campfire_cooking");
             }
 
             @Override
             public void buildRecipes() {
+                // ===== Nấu chảy: raw + ore -> ingot =====
                 for (Block ore : ModBlocks.ALL_ORES) {
                     String base = stripSuffix(path(ore), "_ore");
+                    if (base.startsWith("deepslate_")) base = base.substring("deepslate_".length());
                     Item raw   = findItem("raw_" + base);
                     Item ingot = findItem(base + "_ingot");
-                    if (raw == null || ingot == null) continue;
+                    if (ingot == null) continue;
 
-                    List<ItemLike> smeltables = List.of(raw, ore);
+                    // Quặng có raw: nấu raw + ore. Quặng thả thẳng ingot (azurite): chỉ nấu ore.
+                    List<ItemLike> smeltables = raw != null ? List.of(raw, ore) : List.of(ore);
 
-                    oreSmelting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 200, base);
-                    oreBlasting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 100, base);
+                    String group = raw != null ? base : base + "_ore";
+                    oreSmelting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 200, group);
+                    oreBlasting(smeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ingot, 0.25f, 100, group);
                 }
 
+                // ===== Nén: 9 ingot <-> 1 block =====
                 for (Block block : ModBlocks.ALL_METALS) {
                     String base = stripSuffix(path(block), "_block");
                     Item ingot = findItem(base + "_ingot");
@@ -64,10 +79,12 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     nineBlockStorageRecipes(RecipeCategory.MISC, ingot, RecipeCategory.MISC, block);
                 }
                 
+                // ===== Dụng cụ =====
                 record ToolSet(Item ingot, Item sword, Item pickaxe, Item axe, Item shovel, Item hoe) {}
 
                 List<ToolSet> toolSets = List.of(
                     new ToolSet(ModItems.Aluminum_ingot, ModItems.Aluminum_sword, ModItems.Aluminum_pickaxe, ModItems.Aluminum_axe, ModItems.Aluminum_shovel, ModItems.Aluminum_hoe),
+                    new ToolSet(ModItems.Azurite_ingot, ModItems.Azurite_sword, ModItems.Azurite_pickaxe, ModItems.Azurite_axe, ModItems.Azurite_shovel, ModItems.Azurite_hoe),
                     new ToolSet(ModItems.Tin_ingot, ModItems.Tin_sword, ModItems.Tin_pickaxe, ModItems.Tin_axe, ModItems.Tin_shovel, ModItems.Tin_hoe),
                     new ToolSet(ModItems.Chromium_ingot, ModItems.Chromium_sword, ModItems.Chromium_pickaxe, ModItems.Chromium_axe, ModItems.Chromium_shovel, ModItems.Chromium_hoe),
                     new ToolSet(ModItems.Titanium_ingot, ModItems.Titanium_sword, ModItems.Titanium_pickaxe, ModItems.Titanium_axe, ModItems.Titanium_shovel, ModItems.Titanium_hoe),
@@ -78,16 +95,19 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     String axeName = BuiltInRegistries.ITEM.getKey(set.axe()).getPath();
                     String hoeName = BuiltInRegistries.ITEM.getKey(set.hoe()).getPath();
 
+                    // Sword
                     shaped(RecipeCategory.COMBAT, set.sword())
                         .pattern("X").pattern("X").pattern("|")
                         .define('X', set.ingot()).define('|', Items.STICK)
                         .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
 
+                    // Pickaxe
                     shaped(RecipeCategory.TOOLS, set.pickaxe())
                         .pattern("XXX").pattern(" | ").pattern(" | ")
                         .define('X', set.ingot()).define('|', Items.STICK)
                         .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
 
+                    // Axe (2 kiểu)
                     shaped(RecipeCategory.TOOLS, set.axe())
                         .pattern("XX").pattern("X|").pattern(" |")
                         .define('X', set.ingot()).define('|', Items.STICK)
@@ -98,11 +118,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .define('X', set.ingot()).define('|', Items.STICK)
                         .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, axeName + "_mirrored");
 
+                    // Shovel
                     shaped(RecipeCategory.TOOLS, set.shovel())
                         .pattern("X").pattern("|").pattern("|")
                         .define('X', set.ingot()).define('|', Items.STICK)
                         .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output);
 
+                    // Hoe (2 kiểu)
                     shaped(RecipeCategory.TOOLS, set.hoe())
                         .pattern("XX").pattern(" |").pattern(" |")
                         .define('X', set.ingot()).define('|', Items.STICK)
@@ -114,6 +136,41 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(set.ingot()), has(set.ingot())).save(output, hoeName + "_mirrored");
                 }
 
+                // ===== Dolabra: nâng cấp cuốc chim kim cương (Smithing Table) =====
+                SmithingTransformRecipeBuilder.smithing(
+                        Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+                        Ingredient.of(Items.DIAMOND_PICKAXE),
+                        Ingredient.of(ModItems.Azurite_ingot),
+                        RecipeCategory.TOOLS, ModItems.Azurite_dolabra)
+                    .unlocks(getHasName(ModItems.Azurite_ingot), has(ModItems.Azurite_ingot))
+                    .save(output, "azurite_dolabra_smithing");
+
+                // ===== Mattock (rìu + xẻng + cuốc) =====
+                shaped(RecipeCategory.TOOLS, ModItems.Azurite_mattock)
+                    .pattern("XXX").pattern("X| ").pattern(" | ")
+                    .define('X', ModItems.Azurite_ingot).define('|', Items.STICK)
+                    .unlockedBy(getHasName(ModItems.Azurite_ingot), has(ModItems.Azurite_ingot)).save(output);
+
+                // ===== Giáp Azurite =====
+                Item az = ModItems.Azurite_ingot;
+                shaped(RecipeCategory.COMBAT, ModItems.Azurite_helmet)
+                    .pattern("XXX").pattern("X X")
+                    .define('X', az).unlockedBy(getHasName(az), has(az)).save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.Azurite_chestplate)
+                    .pattern("X X").pattern("XXX").pattern("XXX")
+                    .define('X', az).unlockedBy(getHasName(az), has(az)).save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.Azurite_leggings)
+                    .pattern("XXX").pattern("X X").pattern("X X")
+                    .define('X', az).unlockedBy(getHasName(az), has(az)).save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.Azurite_boots)
+                    .pattern("X X").pattern("X X")
+                    .define('X', az).unlockedBy(getHasName(az), has(az)).save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.Azurite_horse_armor)
+                    .pattern("  X").pattern("XLX").pattern("XXX")
+                    .define('X', az).define('L', Items.LEATHER)
+                    .unlockedBy(getHasName(az), has(az)).save(output);
+
+                // ===== THỨC ĂN =====
                 List<ItemLike> chickenSmeltables = List.of(ModItems.Chicken_wing);
                 List<ItemLike> porkSmeltables = List.of(ModItems.Pork);
                 List<ItemLike> baguetteSmeltables = List.of(Items.HAY_BLOCK);
@@ -122,6 +179,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 cookFood(porkSmeltables, ModItems.Pork_cooked, "pork");
                 cookFood(baguetteSmeltables, ModItems.Baguette, "baguette");
 
+                // ===== PHÔ MAI =====
                 shapeless(RecipeCategory.FOOD, ModItems.Cheese_full)
                     .requires(Items.MILK_BUCKET)
                     .requires(Items.WHEAT, 3)
@@ -147,6 +205,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return "IGOO Recipes";
     }
 
+    // --- Các hàm helper ---
     private static String path(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block).getPath();
     }

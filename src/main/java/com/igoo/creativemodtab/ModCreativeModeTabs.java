@@ -44,7 +44,10 @@ public class ModCreativeModeTabs {
             Identifier.fromNamespaceAndPath(Igoo.MOD_ID, "tools"),
             FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.Aluminum_pickaxe))
     .title(Component.translatable("creativemodetab.igoo.tools"))
-    .displayItems((parameters, output) -> {ModItems.ALL_TOOLS.forEach(output::accept);})
+    .displayItems((parameters, output) -> {
+        ModItems.ALL_TOOLS.forEach(output::accept);
+        ModItems.ALL_ARMORS.forEach(output::accept);
+    })
     .build());
     
     public static void registerModCreativeModeTabs() {
