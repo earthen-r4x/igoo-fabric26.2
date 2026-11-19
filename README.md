@@ -456,9 +456,9 @@ Tìm các dòng có tiền tố [igoo] hoặc com.igoo để debug.
 Mọi đóng góp đều được hoan nghênh! Để đóng góp:
 
 1. Fork dự án
-2. Tạo nhánh mới: git checkout -b feature/tinh-nang-moi
-3. Commit thay đổi: git commit -m "Thêm tính năng X"
-4. Push lên nhánh: git push origin feature/tinh-nang-moi
+2. Tạo nhánh mới: `git checkout -b feature/tinh-nang-moi`
+3. Commit thay đổi: `git commit -m "Thêm tính năng X"`
+4. Push lên nhánh: `git push origin feature/tinh-nang-moi`
 5. Mở Pull Request
 
 ### 🐛 Báo cáo bug
